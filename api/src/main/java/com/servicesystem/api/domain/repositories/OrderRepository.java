@@ -1,5 +1,11 @@
 package com.servicesystem.api.domain.repositories;
 
-public class OrderRepository {
+import java.util.UUID;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.servicesystem.api.domain.models.Order;
+
+public interface OrderRepository extends JpaRepository<Order, UUID> {
 
 }
