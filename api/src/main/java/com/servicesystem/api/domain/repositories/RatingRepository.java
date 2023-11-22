@@ -1,5 +1,9 @@
 package com.servicesystem.api.domain.repositories;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RatingRepository {
+import com.servicesystem.api.domain.models.Rating;
+
+public interface RatingRepository extends JpaRepository<Rating, UUID>  {
 
 }
