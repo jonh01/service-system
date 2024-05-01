@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.servicesystem.api.domain.models.users.Client;
+import com.servicesystem.api.domain.models.users.User;
 
-public interface ClientRepository extends JpaRepository<Client, UUID> {
+public interface UserRepository extends JpaRepository<User, UUID> {
 
 }

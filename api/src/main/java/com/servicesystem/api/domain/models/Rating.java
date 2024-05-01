@@ -7,7 +7,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.servicesystem.api.domain.models.users.Client;
+import com.servicesystem.api.domain.models.users.User;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.ElementCollection;
@@ -33,8 +33,8 @@ public class Rating {
     private Set<String> images = new HashSet<>();
 
     @ManyToOne
-	@JoinColumn(name="client_id")
-    private Client client;
+	@JoinColumn(name="user_id")
+    private User user;
 
     @ManyToOne
 	@JoinColumn(name="service_id")

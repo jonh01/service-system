@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.servicesystem.api.domain.models.users.Client;
+import com.servicesystem.api.domain.models.users.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,8 +28,8 @@ public class Order {
     private Double price;
 
     @ManyToOne
-	@JoinColumn(name="client_id")
-    private Client client;
+	@JoinColumn(name="user_id")
+    private User user;
 
     @ManyToOne
 	@JoinColumn(name="service_id")

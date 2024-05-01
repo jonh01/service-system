@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.servicesystem.api.domain.models.enums.StatusService;
-import com.servicesystem.api.domain.models.users.Provider;
+import com.servicesystem.api.domain.models.users.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,8 +29,8 @@ public class Service {
     private String description;
 
     @ManyToOne
-	@JoinColumn(name="client_id")
-    private Provider provider;
+	@JoinColumn(name="user_id")
+    private User user;
 
     @ManyToOne
 	@JoinColumn(name="service_id")

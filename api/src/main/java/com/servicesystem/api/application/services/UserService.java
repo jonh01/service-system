@@ -1,5 +1,5 @@
 package com.servicesystem.api.application.services;
 
-public class ClientService {
+public class UserService {
     
 }
