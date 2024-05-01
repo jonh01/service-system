@@ -52,9 +52,17 @@ public class ImageService {
 		RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 		
-		String responseBody = response.getBody().toString();
+        String responseBody;
+
+		if(response.getBody() == null){
+            return null;
+        }
+        else {
+            responseBody = response.getBody().toString();
+        }
 		
 		int start = responseBody.indexOf("https:");
+        
 	    if (start == -1) {
 	        return null; // não encontrou uma URL na string
 	    }
