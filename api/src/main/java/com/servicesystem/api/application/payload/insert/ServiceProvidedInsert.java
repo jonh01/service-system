@@ -11,12 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ServiceInsert {
+public class ServiceProvidedInsert {
 
     @NotBlank
     private String name;
 
     private StatusService status;
+
+    private String image;
 
     @NotBlank
     private String localAtuacao;

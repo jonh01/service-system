@@ -29,7 +29,7 @@ public class Rating {
     @GeneratedValue(generator = "UUID")
 	private UUID id;
 
-    private String note;
+    private Short note;
     private String comment;
 
     @ElementCollection
@@ -42,7 +42,7 @@ public class Rating {
 
     @ManyToOne
 	@JoinColumn(name="service_id")
-    private Service service;
+    private ServiceProvided serviceProvided;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

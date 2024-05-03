@@ -18,6 +18,6 @@ public class OrderResponse {
     private LocalDateTime endAt;
     private Double price;
     private UUID userId;
-    private UUID serviceId;
+    private UUID serviceProvidedId;
     private LocalDateTime createdAt;
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RatingUpdate {
 
-    private String note;
+    private Short note;
     private String comment;
     private Set<String> images = new HashSet<>();
 }

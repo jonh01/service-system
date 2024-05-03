@@ -22,5 +22,5 @@ public class OrderInsert {
     private UUID userId;
 
     @NotBlank
-    private UUID serviceId;
+    private UUID serviceProvidedId;
 }

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class RatingInsert {
 
     @NotBlank
-    private String note;
+    private Short note;
     
     private String comment;
     private Set<String> images = new HashSet<>();
@@ -24,5 +24,5 @@ public class RatingInsert {
     private UUID userId;
 
     @NotBlank
-    private UUID serviceId;
+    private UUID serviceProvidedId;
 }

@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class RatingResponse {
 
     private UUID id;
-    private String note;
+    private Short note;
     private String comment;
     private Set<String> images = new HashSet<>();
     private UUID userId;
-    private UUID serviceId;
+    private UUID serviceProvidedId;
     private LocalDateTime createdAt;
 }
