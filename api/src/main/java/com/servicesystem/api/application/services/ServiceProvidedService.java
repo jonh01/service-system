@@ -2,14 +2,20 @@ package com.servicesystem.api.application.services;
 
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.servicesystem.api.domain.models.Metrics;
 import com.servicesystem.api.domain.models.Rating;
 import com.servicesystem.api.domain.models.ServiceProvided;
+import com.servicesystem.api.domain.repositories.RatingRepository;
 
 @Service
 public class ServiceProvidedService {
+
+
+    @Autowired
+    private RatingRepository ratingRepository;
 
 
 

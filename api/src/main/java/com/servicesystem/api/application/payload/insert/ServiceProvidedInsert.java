@@ -1,7 +1,8 @@
 package com.servicesystem.api.application.payload.insert;
 
 import java.util.UUID;
-
+import java.util.Set;
+import java.util.HashSet;
 import com.servicesystem.api.domain.models.enums.StatusService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -21,10 +22,10 @@ public class ServiceProvidedInsert {
     private String image;
 
     @NotBlank
-    private String localAtuacao;
+    private String description;
 
     @NotBlank
-    private String description;
+    private Set<String> localAction = new HashSet<>();
 
     @NotBlank
     private UUID userId;

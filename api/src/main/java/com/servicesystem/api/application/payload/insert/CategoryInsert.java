@@ -15,4 +15,7 @@ public class CategoryInsert {
 
 	@NotBlank
 	private String description;
+
+	@NotBlank
+	private Double price;
 }

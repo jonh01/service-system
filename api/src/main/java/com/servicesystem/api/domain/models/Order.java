@@ -36,7 +36,7 @@ public class Order {
     private User user;
 
     @ManyToOne
-	@JoinColumn(name="service_id")
+	@JoinColumn(name="service_provided_id")
     private ServiceProvided serviceProvided;
 
     @CreationTimestamp

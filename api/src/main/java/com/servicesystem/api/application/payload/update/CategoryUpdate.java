@@ -11,4 +11,5 @@ public class CategoryUpdate {
 
 	private String name;
 	private String description;
+	private Double price;
 }
