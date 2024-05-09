@@ -5,18 +5,18 @@ import java.util.UUID;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import com.servicesystem.api.domain.models.enums.StatusService;
 import com.servicesystem.api.domain.models.users.User;
 
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,6 +36,7 @@ public class ServiceProvided {
     private StatusService status;
     private String image;
 
+    @Column(columnDefinition="TEXT")
     private String description;
 
     
@@ -54,6 +55,10 @@ public class ServiceProvided {
     @Transient
     private Metrics metrics;
 
-    @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

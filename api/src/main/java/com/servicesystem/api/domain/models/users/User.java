@@ -5,14 +5,15 @@ import java.util.UUID;
 import java.util.Set;
 import java.util.HashSet;
 
-import org.hibernate.annotations.CreationTimestamp;
 import com.servicesystem.api.domain.models.enums.RegisteredUserType;
 
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,10 @@ public class User {
     @GeneratedValue(generator = "UUID")
     private UUID id;
 	private String name;
+
+    @Column(unique=true)
 	private String email;
+
 	private String password;
     private String phone;
     private String image;
@@ -36,7 +40,11 @@ public class User {
     @CollectionTable(name = "tb_type_user")
     private Set<RegisteredUserType> type = new HashSet<>(); 
 
-    @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
 }

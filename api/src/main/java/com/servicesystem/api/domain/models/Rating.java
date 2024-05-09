@@ -5,17 +5,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.annotations.CreationTimestamp;
-
 import com.servicesystem.api.domain.models.users.User;
 
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +30,8 @@ public class Rating {
 	private UUID id;
 
     private Short note;
+
+    @Column(columnDefinition="TEXT")
     private String comment;
 
     @ElementCollection
@@ -44,6 +46,10 @@ public class Rating {
 	@JoinColumn(name="service_provided_id")
     private ServiceProvided serviceProvided;
 
-    @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

@@ -1,11 +1,11 @@
 package com.servicesystem.api.application.payload.insert;
 
-import java.util.UUID;
 import java.util.Set;
 import java.util.HashSet;
 
 import com.servicesystem.api.domain.models.enums.RegisteredUserType;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,11 +15,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserInsert {
 
-    private UUID id;
+    @NotBlank
 	private String name;
+
+    @NotBlank
 	private String email;
+
+    @NotBlank
     private String phone;
+
+    @NotBlank
     private String image;
+    
     private Set<RegisteredUserType> type = new HashSet<>(); 
 
 }
