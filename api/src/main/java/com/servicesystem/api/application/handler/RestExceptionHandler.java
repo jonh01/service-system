@@ -14,9 +14,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.servicesystem.api.domain.exceptions.BusinessException;
@@ -59,19 +56,19 @@ public class RestExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
     }
 
-        // erros para recursos não encontrado
-        @ExceptionHandler(NoResourceFoundException.class)
-        public ResponseEntity<StandardError> handleResourceNotFoundException(NoResourceFoundException exception, HttpServletRequest request){
+    // erros para recursos não encontrado
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<StandardError> handleResourceNotFoundException(NoResourceFoundException exception, HttpServletRequest request){
     
-            StandardError err = new StandardError();
-            err.setTimestamp(LocalDateTime.now());
-            err.setStatus(HttpStatus.NOT_FOUND.value());
-            err.setError(HttpStatus.NOT_FOUND.getReasonPhrase());
-            err.setMessage("URL não encontrada!");
-            err.setPath(request.getRequestURI());
+        StandardError err = new StandardError();
+        err.setTimestamp(LocalDateTime.now());
+        err.setStatus(HttpStatus.NOT_FOUND.value());
+        err.setError(HttpStatus.NOT_FOUND.getReasonPhrase());
+        err.setMessage("URL não encontrada!");
+        err.setPath(request.getRequestURI());
             
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
-        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
+    }
 
     // erros na requisição: verificação dos campos
     @ExceptionHandler(MethodArgumentNotValidException.class)

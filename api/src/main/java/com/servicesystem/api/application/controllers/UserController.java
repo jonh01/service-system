@@ -1,7 +1,6 @@
 package com.servicesystem.api.application.controllers;
 
 import java.net.URI;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +29,7 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById (@PathVariable UUID id){
+    public ResponseEntity<UserResponse> findById (@PathVariable String id){
 
         return ResponseEntity.ok(userService.findById(id));
 	}
@@ -48,14 +47,14 @@ public class UserController {
 	}
 
     @PutMapping("/{id}")
-	public ResponseEntity<Void> update(@PathVariable UUID id, @Valid @RequestBody UserUpdate userUpdate) {
+	public ResponseEntity<Void> update(@PathVariable String id, @Valid @RequestBody UserUpdate userUpdate) {
 
         userService.update(id, userUpdate);
         return ResponseEntity.noContent().build();
 	}
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
 	
         userService.delete(id);
         return ResponseEntity.noContent().build();

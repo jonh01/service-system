@@ -8,12 +8,12 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Constraint(validatedBy = IDValidator.class)
+@Constraint(validatedBy = PhoneValidator.class)
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface IID {
+public @interface Phone {
 
-    String message() default "ID com formato incorreto!";
+    String message() default "Formato de telefone incorreto! Padrão: (xx)9xxxx-xxxx";
 
 	Class<?>[] groups() default {};
 

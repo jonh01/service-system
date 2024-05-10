@@ -1,5 +1,5 @@
 package com.servicesystem.api.application.payload.insert;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,12 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CategoryInsert {
 
+	@Schema(description = "Nome da categoria", example = "Conserto de Notebooks")
 	@NotBlank
 	private String name;
 
+	@Schema(description = "Descrição da categoria", example = "Conserto e limpeza de notebooks")
 	@NotBlank
 	private String description;
 
+	@Schema(description = "Preço base da categoria", example = "29.99")
 	@NotBlank
 	private Double price;
 }

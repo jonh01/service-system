@@ -29,7 +29,7 @@ public class Rating {
     @GeneratedValue(generator = "UUID")
 	private UUID id;
 
-    private Short note;
+    private Integer note;
 
     @Column(columnDefinition="TEXT")
     private String comment;

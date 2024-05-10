@@ -20,6 +20,7 @@ public class UserResponse {
     private UUID id;
 	private String name;
 	private String email;
+    private String cpf;
     private String phone;
     private String image;
     private Set<RegisteredUserType> type = new HashSet<>();
