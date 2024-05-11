@@ -19,6 +19,7 @@ public class Category {
     @Id
     @GeneratedValue(generator = "UUID")
 	private UUID id;
+	
 	private String name;
 
 	@Column(columnDefinition="TEXT")

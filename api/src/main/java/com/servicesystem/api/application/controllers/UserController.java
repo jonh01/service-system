@@ -22,7 +22,7 @@ import com.servicesystem.api.application.services.UserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     
     @Autowired

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,12 +23,12 @@ public class OrderInsert {
     private LocalDateTime startAt;
 
     @Schema(description = "Preço base do serviço", example = "29.99")
-    @NotBlank
+    @NotNull
     private Double price;
 
-    @NotBlank
+    @NotNull
     private UUID userId;
 
-    @NotBlank
+    @NotNull
     private UUID serviceProvidedId;
 }

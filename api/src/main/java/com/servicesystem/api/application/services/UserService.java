@@ -28,7 +28,7 @@ public class UserService {
 		
 		User user = userRepository.findById(ConverterUtil.convertStringForUUID(id))
         .orElseThrow(() -> new ObjectNotFoundException(
-            "Usuário não encontrada! Id "+ id ));
+            "Usuário não encontrado! Id "+ id ));
 
 		return modelMapper.map(user, UserResponse.class);
 	}
@@ -56,7 +56,7 @@ public class UserService {
 
 		User searchedUser = userRepository.findById(ConverterUtil.convertStringForUUID(id))
         .orElseThrow(() -> new ObjectNotFoundException(
-            "Usuário não encontrada! Id "+ id ));
+            "Usuário não encontrado! Id "+ id ));
 
 			updateUser(userUpdate, searchedUser);
 		

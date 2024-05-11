@@ -10,6 +10,8 @@ import com.servicesystem.api.domain.models.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
-    Page<Category> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Category> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    boolean existsByName(String name);
 
 }
