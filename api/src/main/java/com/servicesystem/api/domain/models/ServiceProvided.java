@@ -3,11 +3,14 @@ package com.servicesystem.api.domain.models;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.servicesystem.api.domain.models.enums.StatusService;
 import com.servicesystem.api.domain.models.users.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -16,6 +19,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -51,6 +55,12 @@ public class ServiceProvided {
     @ManyToOne
 	@JoinColumn(name="category_id")
     private Category category;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "service_provided_id")
+    private List<Rating> ratings;
+
 
     @Transient
     private Metrics metrics;

@@ -42,9 +42,8 @@ public class Rating {
 	@JoinColumn(name="user_id")
     private User user;
 
-    @ManyToOne
-	@JoinColumn(name="service_provided_id")
-    private ServiceProvided serviceProvided;
+    @Column(name = "service_provided_id")
+    private UUID serviceProvidedId;
 
     private LocalDateTime createdAt;
 

@@ -18,7 +18,7 @@ public class ServiceProvidedService {
     private RatingRepository ratingRepository;
 
 
-/*
+
 
     // adicionar métricas de avaliações aos serviços
     private void addMetrics(ServiceProvided serviceProvided) {
@@ -39,5 +39,5 @@ public class ServiceProvidedService {
         // adiciona as metricas no serviço
         serviceProvided.setMetrics(metrics);
     }
-*/
+
 }
