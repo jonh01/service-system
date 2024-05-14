@@ -17,7 +17,24 @@ public class OrderResponse {
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private Double price;
-    private UUID userId;
-    private UUID serviceProvidedId;
+    private User user;
+    private ServiceProvided serviceProvided;
     private LocalDateTime createdAt;
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    private static class User{
+        private UUID id;
+	    private String name;
+        private String image;
+    }
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    private static class ServiceProvided{
+        private UUID id;
+	    private String name;
+    }
 }

@@ -19,14 +19,23 @@ public class RatingResponse {
     private String comment;
     private Set<String> images = new HashSet<>();
     private User user;
-    private UUID serviceProvidedId;
+    private ServiceProvided serviceProvided;
     private LocalDateTime createdAt;
 
     @Data
 	@NoArgsConstructor
 	@AllArgsConstructor
     private static class User{
-	private String name;
-    private String image;
+        private UUID id;
+	    private String name;
+        private String image;
+    }
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    private static class ServiceProvided{
+        private UUID id;
+	    private String name;
     }
 }

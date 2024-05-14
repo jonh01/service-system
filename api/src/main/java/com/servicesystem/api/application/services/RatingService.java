@@ -38,7 +38,7 @@ public class RatingService {
 	@Transactional
 	public RatingResponse create (RatingInsert ratingInsert){
              
-        if (existsWithUserAndServiceProvide(ratingInsert.getUserId(), ratingInsert.getServiceProvidedId()))
+        if (existsWithUserAndServiceProvide(ratingInsert.getUser().getId(), ratingInsert.getServiceProvided().getId()))
             throw new BusinessException("Avaliação já cadastrada!"); 
 
 		return modelMapper.map(

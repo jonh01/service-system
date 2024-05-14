@@ -28,11 +28,25 @@ public class RatingInsert {
     
     private Set<String> images = new HashSet<>();
 
-    @NotNull
-    private UUID userId;
+    private User user;
 
-    @NotNull
-    private UUID serviceProvidedId;
+    private ServiceProvided serviceProvided;
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    public static class User{
+        @NotNull
+        private UUID id;
+    }
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    public static class ServiceProvided{
+        @NotNull
+        private UUID id;
+    }
 
     
 }

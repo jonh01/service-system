@@ -24,14 +24,24 @@ public class ServiceProvidedResponse {
     private User user;
     private List<RatingResponse> ratings;
     private Metrics metrics;
+    private Category category;
     private LocalDateTime createdAt;
 
     @Data
 	@NoArgsConstructor
 	@AllArgsConstructor
     private static class User{
-	private String name;
-    private String image;
+        private UUID id;
+	    private String name;
+        private String image;
+    }
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    private static class Category{
+        private UUID id;
+	    private String name;
     }
 
 }
