@@ -44,13 +44,19 @@ public class ServiceController {
         return ResponseEntity.ok(serviceProvidedService.findAllByUserId(userId, pageable));
     }
 
-    @GetMapping("/categories/services")
-    ResponseEntity<Page<ServiceProvidedSummaryResponse>> findAllByCategory( 
-            @RequestParam String categoryId,
+    @GetMapping("/services")
+    ResponseEntity<Page<ServiceProvidedSummaryResponse>> findAllByStatus( 
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String categoryId,
             @RequestParam StatusService status,
             @ParameterObject @PageableDefault(size = 5, sort = "id") Pageable pageable ) {
 
-        return ResponseEntity.ok(serviceProvidedService.findAllByCategoryIdAndStatus(categoryId, status, pageable));
+        if(name != null && categoryId != null)
+            return ResponseEntity.ok(serviceProvidedService.findAllByNameAndCategoryIdAndStatus(name, categoryId, status, pageable));
+        else if(categoryId == null)
+            return ResponseEntity.ok(serviceProvidedService.findAllByName(name, status, pageable));
+        else
+            return ResponseEntity.ok(serviceProvidedService.findAllByCategoryIdAndStatus(categoryId, status, pageable));
     }
 
     @GetMapping("/services/{id}")

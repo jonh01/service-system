@@ -17,5 +17,14 @@ public class ServiceProvidedUserResponse {
     private String name;
     private String image;
     private StatusService status;
+    private User user;
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    private static class User{
+	private String name;
+    private String image;
+    }
 
 }
