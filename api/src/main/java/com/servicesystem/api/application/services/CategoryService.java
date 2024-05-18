@@ -26,9 +26,9 @@ public class CategoryService {
     @Autowired
 	private ModelMapper modelMapper;
 
-    public Page<CategoryResponse> findAllByName (String name, Pageable pageable){
+    public Page<CategoryResponse> findAll (Pageable pageable){
 
-        Page<Category> page = categoryRepository.findAllByNameContainingIgnoreCase(name, pageable);
+        Page<Category> page = categoryRepository.findAll(pageable);
         return page.map(category -> modelMapper.map(category, CategoryResponse.class));
     }
 

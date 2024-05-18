@@ -2,11 +2,11 @@ package com.servicesystem.api.application.payload.response;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.servicesystem.api.domain.models.Metrics;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,9 +23,11 @@ public class ServiceProvidedResponse {
     private Set<String> localAction = new HashSet<>();
     private User user;
     private List<RatingResponse> ratings;
-    private Metrics metrics;
     private Category category;
     private LocalDateTime createdAt;
+    private Integer numReviews;
+    private Integer sumReviews;
+    private HashMap<Integer, Integer> numReviewsNote = new HashMap<>();
 
     @Data
 	@NoArgsConstructor

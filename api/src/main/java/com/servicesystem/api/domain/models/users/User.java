@@ -11,6 +11,8 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
@@ -32,12 +34,14 @@ public class User {
     @Column(unique=true)
 	private String email;
 
+    @Column(unique=true)
 	private String cpf;
     private String phone;
     private String image;
 
     @ElementCollection
     @CollectionTable(name = "tb_type_user")
+    @Enumerated(EnumType.STRING)
     private Set<RegisteredUserType> type = new HashSet<>(); 
 
     private LocalDateTime createdAt;

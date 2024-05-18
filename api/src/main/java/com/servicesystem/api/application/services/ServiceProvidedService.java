@@ -1,7 +1,5 @@
 package com.servicesystem.api.application.services;
 
-import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +12,8 @@ import com.servicesystem.api.application.payload.response.ServiceProvidedSummary
 import com.servicesystem.api.application.payload.response.ServiceProvidedUserResponse;
 import com.servicesystem.api.application.payload.update.ServiceProvidedUpdate;
 import com.servicesystem.api.domain.exceptions.ObjectNotFoundException;
-import com.servicesystem.api.domain.models.Metrics;
 import com.servicesystem.api.domain.models.ServiceProvided;
 import com.servicesystem.api.domain.models.enums.StatusService;
-import com.servicesystem.api.domain.models.Rating;
 import com.servicesystem.api.domain.repositories.ServiceProvidedRepository;
 import com.servicesystem.api.domain.utils.ConverterUtil;
 
@@ -35,28 +31,24 @@ public class ServiceProvidedService {
     public Page<ServiceProvidedUserResponse> findAllByUserId (String userId, Pageable pageable){
 
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByUserId(ConverterUtil.convertStringForUUID(userId), pageable);
-        page.forEach(this::addMetrics);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedUserResponse.class));
     }
 
     public Page<ServiceProvidedSummaryResponse> findAllByName (String name, StatusService status, Pageable pageable){
 
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(status, name, name, pageable);
-        page.forEach(this::addMetrics);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
     }
 
     public Page<ServiceProvidedSummaryResponse> findAllByCategoryIdAndStatus (String categoryId, StatusService status, Pageable pageable){
 
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatus(ConverterUtil.convertStringForUUID(categoryId), status, pageable);
-        page.forEach(this::addMetrics);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
     }
 
     public Page<ServiceProvidedSummaryResponse> findAllByNameAndCategoryIdAndStatus (String name, String categoryId, StatusService status, Pageable pageable){
 
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatusAndNameOrDescription(ConverterUtil.convertStringForUUID(categoryId), status, name, name, pageable);
-        page.forEach(this::addMetrics);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
     }
 
@@ -66,7 +58,6 @@ public class ServiceProvidedService {
         .orElseThrow(() -> new ObjectNotFoundException(
             "Serviço não encontrado! Id "+ id ));
 
-        addMetrics(serviceProvided);
 		return modelMapper.map(serviceProvided, ServiceProvidedResponse.class);
 	}
 
@@ -74,7 +65,9 @@ public class ServiceProvidedService {
 	public ServiceProvidedResponse create (ServiceProvidedInsert serviceProvidedInsert){
 
         var service = modelMapper.map(serviceProvidedInsert, ServiceProvided.class);
-        service.setStatus(StatusService.pending);
+        service.setStatus(StatusService.Pending);
+        service.setNumReviews(0);
+        service.setSumReviews(0);
 
 		return modelMapper.map(
 			serviceProvidedRepository.save(service), ServiceProvidedResponse.class
@@ -126,26 +119,6 @@ public class ServiceProvidedService {
             }
         }
         
-    }
-
-    // adicionar métricas de avaliações aos serviços
-    private void addMetrics(ServiceProvided serviceProvided) {
-
-        // soma todas as notas
-        Integer sum = serviceProvided.getRatings().stream().collect(Collectors.summingInt(Rating::getNote));
-        Metrics metrics = new Metrics();
-
-        // adiciona o número e avaliações
-        metrics.setNumReviews(serviceProvided.getRatings().size());
-
-        // adiciona as medias de avaliações
-        metrics.setAverage(((double) sum) / metrics.getNumReviews());
-
-        // adiciona quanto cada nota tem
-        serviceProvided.getRatings().forEach(ratings -> metrics.addNumReviewsNote(ratings.getNote()));
-
-        // adiciona as metricas no serviço
-        serviceProvided.setMetrics(metrics);
     }
 
 }

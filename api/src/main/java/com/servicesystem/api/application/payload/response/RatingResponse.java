@@ -36,6 +36,5 @@ public class RatingResponse {
 	@AllArgsConstructor
     private static class ServiceProvided{
         private UUID id;
-	    private String name;
     }
 }

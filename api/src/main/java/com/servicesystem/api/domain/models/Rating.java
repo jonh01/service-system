@@ -39,10 +39,10 @@ public class Rating {
     private Set<String> images = new HashSet<>();
 
     @ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="fk_user_id")
     private User user;
 
-    @Column(name = "service_provided_id")
+    @Column(name = "fk_service_provided_id")
     private UUID serviceProvidedId;
 
     private LocalDateTime createdAt;

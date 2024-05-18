@@ -2,7 +2,6 @@ package com.servicesystem.api.application.payload.response;
 
 import java.util.UUID;
 
-import com.servicesystem.api.domain.models.Metrics;
 import com.servicesystem.api.domain.models.enums.StatusService;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +20,8 @@ public class ServiceProvidedSummaryResponse {
     private StatusService status;
     private User user;
     private Category category;
-    private Metrics metrics;
+    private Integer numReviews;
+    private Integer sumReviews;
 
     @Data
 	@NoArgsConstructor

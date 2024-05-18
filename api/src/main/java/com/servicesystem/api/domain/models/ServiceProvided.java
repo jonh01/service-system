@@ -2,6 +2,7 @@ package com.servicesystem.api.domain.models;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,13 +16,15 @@ import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,7 +40,10 @@ public class ServiceProvided {
 	private UUID id;
 
     private String name;
+
+    @Enumerated(EnumType.STRING)
     private StatusService status;
+
     private String image;
 
     @Column(columnDefinition="TEXT")
@@ -49,21 +55,28 @@ public class ServiceProvided {
     private Set<String> localAction = new HashSet<>();
 
     @ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="fk_user_id")
     private User user;
 
     @ManyToOne
-	@JoinColumn(name="category_id")
+	@JoinColumn(name="fk_category_id")
     private Category category;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "service_provided_id")
+    @JoinColumn(name = "fk_service_provided_id")
     private List<Rating> ratings;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Integer numReviews;
 
-    @Transient
-    private Metrics metrics;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Integer sumReviews;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "fk_service_provided_id")
+    private Set<ReviewsNote> numReviewsNote = new HashSet<>();
 
     private LocalDateTime createdAt;
 

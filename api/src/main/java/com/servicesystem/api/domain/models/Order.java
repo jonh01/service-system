@@ -31,11 +31,11 @@ public class Order {
     private Double price;
 
     @ManyToOne
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="fk_user_id")
     private User user;
 
     @ManyToOne
-	@JoinColumn(name="service_provided_id")
+	@JoinColumn(name="fk_service_provided_id")
     private ServiceProvided serviceProvided;
 
     private LocalDateTime createdAt;

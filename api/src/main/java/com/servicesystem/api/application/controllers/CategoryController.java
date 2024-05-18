@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -34,10 +33,10 @@ public class CategoryController {
     CategoryService categoryService;
     
     @GetMapping
-    ResponseEntity<Page<CategoryResponse>> findAllByName( @RequestParam String name, 
+    ResponseEntity<Page<CategoryResponse>> findAllByName(
             @ParameterObject @PageableDefault(size = 5, sort = "id") Pageable pageable ) {
         
-        return ResponseEntity.ok(categoryService.findAllByName(name, pageable));
+        return ResponseEntity.ok(categoryService.findAll(pageable));
     }
 
     @GetMapping("/{id}")
