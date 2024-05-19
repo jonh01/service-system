@@ -27,6 +27,33 @@ DROP TYPE IF EXISTS statusService;
 CREATE TYPE registeredUserType AS ENUM  ('Client','Provider','Admin');
 CREATE TYPE statusService AS ENUM  ('Active','Pending','Disabled');
 
+
+CREATE OR REPLACE FUNCTION update_reviews_after_insert() RETURNS TRIGGER 
+	LANGUAGE plpgsql
+    AS $$
+BEGIN
+    -- Atualiza o número total de avaliações
+	
+    UPDATE tb_service_provided
+    SET num_reviews = num_reviews + 1,
+        sum_reviews = sum_reviews + NEW.note
+    WHERE id = NEW.fk_service_provided_id;
+
+    -- Atualiza o número de avaliações para cada nota
+    IF EXISTS (SELECT 1 FROM tb_reviews_note WHERE fk_service_provided_id = NEW.fk_service_provided_id AND note = NEW.note) THEN
+        UPDATE tb_reviews_note
+        SET num_reviews = num_reviews + 1
+        WHERE fk_service_provided_id = NEW.fk_service_provided_id AND note = NEW.note;
+    ELSE
+        INSERT INTO tb_reviews_note (note, num_reviews, fk_service_provided_id)
+        VALUES (NEW.note, 1, NEW.fk_service_provided_id);
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+
 CREATE TABLE tb_category
 (
     
@@ -285,3 +312,8 @@ VALUES
 ('f1199e50-f0fd-4cf9-9da7-dba71e164aed', 'https://lh3.googleusercontent.com/EDnobTG2hce6p03gozFnrB9JkQy8eEjxHcXyCXAvrdoNK29n2E1baGT5taUBBdfYvXXzfkKIGmti0fGP7oJ8FgiMIwjGZO43CfGEehK21lq7yqZkLBg'),
 ('1f1f79a2-b0cc-4798-9482-56be14051038', 'https://lh3.googleusercontent.com/EDnobTG2hce6p03gozFnrB9JkQy8eEjxHcXyCXAvrdoNK29n2E1baGT5taUBBdfYvXXzfkKIGmti0fGP7oJ8FgiMIwjGZO43CfGEehK21lq7yqZkLBg'),
 ('ff754c40-f90c-444d-b00c-7cee28971573', 'https://lh3.googleusercontent.com/EDnobTG2hce6p03gozFnrB9JkQy8eEjxHcXyCXAvrdoNK29n2E1baGT5taUBBdfYvXXzfkKIGmti0fGP7oJ8FgiMIwjGZO43CfGEehK21lq7yqZkLBg');
+
+CREATE TRIGGER update_reviews_after_insert
+AFTER INSERT ON tb_rating
+FOR EACH ROW
+EXECUTE FUNCTION update_reviews_after_insert();
