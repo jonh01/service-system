@@ -23,6 +23,9 @@ public class UserService {
     @Autowired
 	private ModelMapper modelMapper;
 
+	@Autowired
+	private ImageService imageService;
+
 
     public UserResponse findById (String id){
 		
@@ -41,6 +44,17 @@ public class UserService {
 
 		if(!userInsert.getCpf().isBlank() && existsByCpf(userInsert.getCpf()))
 			throw new BusinessException("O CPF fornecido é inválido ou já está em uso.");
+
+		if(userInsert.getImage() != null){
+
+            if(imageService.isBase64(userInsert.getImage())){
+                String image64 = userInsert.getImage();
+                userInsert.setImage(imageService.saveNuvem(image64));
+            }
+            else
+                throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
+
+		}
 
 		return modelMapper.map(
 			userRepository.save(modelMapper.map(userInsert, User.class)), 
@@ -81,8 +95,12 @@ public class UserService {
 		if(usuUp.getEmail() != null)
 			user.setEmail(usuUp.getEmail());
 		
-		if(usuUp.getImage() != null)
-			user.setImage(usuUp.getImage());
+		if(usuUp.getImage() != null){
+			if(imageService.isBase64(usuUp.getImage()))
+				user.setImage(imageService.saveNuvem(usuUp.getImage()));
+		else
+			throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
+		}
 
 		if(usuUp.getName() != null)
 			user.setName(usuUp.getName());

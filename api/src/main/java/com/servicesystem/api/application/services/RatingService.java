@@ -1,5 +1,7 @@
 package com.servicesystem.api.application.services;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -26,6 +28,9 @@ public class RatingService {
     @Autowired
 	private ModelMapper modelMapper;
 
+    @Autowired
+	private ImageService imageService;
+
     public RatingResponse findById (String id){
 		
 		Rating rating = ratingRepository.findById(ConverterUtil.convertStringForUUID(id))
@@ -40,6 +45,18 @@ public class RatingService {
              
         if (existsWithUserAndServiceProvide(ratingInsert.getUser().getId(), ratingInsert.getServiceProvided().getId()))
             throw new BusinessException("Avaliação já cadastrada!"); 
+
+        if(ratingInsert.getImages() != null && !ratingInsert.getImages().isEmpty()){
+
+            Set<String> images = new HashSet<>();
+            for (String image : ratingInsert.getImages()) {
+                if(imageService.isBase64(image))
+                    images.add(imageService.saveNuvem(image));
+                else
+                    throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
+            }
+            ratingInsert.setImages(images);
+        }
 
 		return modelMapper.map(
 			ratingRepository.save(modelMapper.map(ratingInsert, Rating.class)), RatingResponse.class
@@ -77,7 +94,10 @@ public class RatingService {
 
         if(ratingUp.getImages().isEmpty()){
             for (String image : ratingUp.getImages()) {
-                rating.getImages().add(image);
+                if(imageService.isBase64(image))
+                    rating.getImages().add(imageService.saveNuvem(image));
+                else
+                    throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
             }
         }
         

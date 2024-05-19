@@ -26,6 +26,7 @@ public class RatingInsert {
     @Schema(description = "Comentário sobre serviço prestado", example = "Ótimo serviço")
     private String comment;
     
+    @Schema(description = "Imagem do usuário", example = "[\"Imagem em base 64\"]")
     private Set<String> images = new HashSet<>();
 
     private User user;

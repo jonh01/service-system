@@ -11,6 +11,7 @@ import com.servicesystem.api.application.payload.response.ServiceProvidedRespons
 import com.servicesystem.api.application.payload.response.ServiceProvidedSummaryResponse;
 import com.servicesystem.api.application.payload.response.ServiceProvidedUserResponse;
 import com.servicesystem.api.application.payload.update.ServiceProvidedUpdate;
+import com.servicesystem.api.domain.exceptions.BusinessException;
 import com.servicesystem.api.domain.exceptions.ObjectNotFoundException;
 import com.servicesystem.api.domain.models.ServiceProvided;
 import com.servicesystem.api.domain.models.enums.StatusService;
@@ -27,6 +28,9 @@ public class ServiceProvidedService {
 
     @Autowired
 	private ModelMapper modelMapper;
+    
+    @Autowired
+	private ImageService imageService;
 
     public Page<ServiceProvidedUserResponse> findAllByUserId (String userId, Pageable pageable){
 
@@ -69,6 +73,16 @@ public class ServiceProvidedService {
         service.setNumReviews(0);
         service.setSumReviews(0);
 
+        if(serviceProvidedInsert.getImage() != null){
+
+            if(imageService.isBase64(serviceProvidedInsert.getImage())){
+                String image64 = serviceProvidedInsert.getImage();
+                serviceProvidedInsert.setImage(imageService.saveNuvem(image64));
+            }
+                else
+                    throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
+        }
+
 		return modelMapper.map(
 			serviceProvidedRepository.save(service), ServiceProvidedResponse.class
 		);
@@ -107,9 +121,13 @@ public class ServiceProvidedService {
 
     private void updateServiceProvided (ServiceProvidedUpdate serviceProvidedUp, ServiceProvided serviceProvided) {
 
-        if (serviceProvidedUp.getImage() != null)
-            serviceProvided.setImage(serviceProvidedUp.getImage());
+        if (serviceProvidedUp.getImage() != null){
 
+            if(imageService.isBase64(serviceProvidedUp.getImage()))
+                serviceProvided.setImage(imageService.saveNuvem(serviceProvidedUp.getImage()));
+            else
+                throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
+        }
         if(serviceProvidedUp.getDescription() != null)
             serviceProvided.setDescription(serviceProvidedUp.getDescription());
 

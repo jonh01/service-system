@@ -18,6 +18,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import com.servicesystem.api.domain.exceptions.BusinessException;
 import com.servicesystem.api.domain.exceptions.ObjectNotFoundException;
+import com.servicesystem.api.domain.exceptions.ServiceUnavailableException;
 import com.servicesystem.api.domain.models.StandardError;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,6 +41,20 @@ public class RestExceptionHandler {
         err.setPath(request.getRequestURI());
         
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+    }
+
+    // servidor não funcionando
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<StandardError> handleServiceUnavailableException(ServiceUnavailableException exception, HttpServletRequest request){
+
+        StandardError err = new StandardError();
+        err.setTimestamp(LocalDateTime.now());
+        err.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+        err.setError(HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase());
+        err.setMessage(exception.getMessage());
+        err.setPath(request.getRequestURI());
+        
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(err);
     }
 
     // erros para objeto não encontrado

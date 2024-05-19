@@ -30,7 +30,7 @@ public class UserInsert {
     @Email
 	private String email;
 
-    @Schema(description = "CPF do usuário", example = "123.456.789.10")
+    @Schema(description = "CPF do usuário", example = "418.717.690-00")
     @NotBlank
     @CPF
     private String cpf;
@@ -40,6 +40,7 @@ public class UserInsert {
     @Phone
     private String phone;
 
+    @Schema(description = "Imagem do usuário", example = "Imagem em base 64")
     private String image;
     
     private Set<RegisteredUserType> type = new HashSet<>(); 

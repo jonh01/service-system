@@ -21,6 +21,7 @@ public class ServiceProvidedInsert {
     @NotBlank
     private String name;
 
+    @Schema(description = "Imagem do usuário", example = "Imagem em base 64")
     private String image;
 
     @Schema(description = "Descrição do serviço", example = "Conserto e limpeza de Notebooks")

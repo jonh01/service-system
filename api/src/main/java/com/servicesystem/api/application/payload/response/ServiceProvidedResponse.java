@@ -2,7 +2,6 @@ package com.servicesystem.api.application.payload.response;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +26,6 @@ public class ServiceProvidedResponse {
     private LocalDateTime createdAt;
     private Integer numReviews;
     private Integer sumReviews;
-    private HashMap<Integer, Integer> numReviewsNote = new HashMap<>();
 
     @Data
 	@NoArgsConstructor

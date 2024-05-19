@@ -1,5 +1,5 @@
 package com.servicesystem.api.application.payload.response;
-import java.util.HashMap;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MetricsResponse {
+public class ReviewsNoteResponse {
     
-        private Double average;
-        private Integer numReviews;
-        private HashMap<Integer,Integer> numReviewsNote = new HashMap<>();
+    private Integer note;
+    private UUID serviceProvidedId;
+    private Integer numReviews;
 }
