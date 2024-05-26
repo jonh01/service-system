@@ -1,15 +1,17 @@
 # Etapa de construção da api
-FROM openjdk:17-alpine AS api
+FROM openjdk:17-alpine AS apijdk
 
 # Porta padrão do Tomcat
 EXPOSE 8080
 
 # Criar diretório de trabalho para o api
 RUN mkdir -p /app/api
+
+#muda para o diretorio
 WORKDIR /app/api
 
 # Copiar código-fonte da api
-COPY api /app/api
+COPY api .
 
 # Construir o JAR da aplicação
 RUN ./mvnw package
@@ -36,17 +38,16 @@ ENV POSTGRES_PASSWORD postgres123
 # Criar diretório e copiar scripts de inicialização do banco de dados
 RUN mkdir -p /docker-entrypoint-initdb.d
 WORKDIR /docker-entrypoint-initdb.d
-COPY bd/scripts-prod.sql .
+COPY scripts .
 
 # Criar diretório para a aplicação e copiar script de espera
-RUN mkdir -p /app/jdk /app/api
-COPY bd/wait-for-it.sh /app/
-RUN chmod +x /app/wait-for-it.sh
+RUN mkdir -p /app/jdk
+
+WORKDIR /app
+
 
 # Copiar JAR e JDK da etapa anterior
-COPY --from=api /app/api/target/*.jar /app/
-COPY --from=api /app/jdk /app/jdk
-RUN chmod +x /app/jdk/bin/*
+COPY --from=apijdk /app/api/target/*.jar /app/
 
-# Comando para iniciar a aplicação, esperando o banco de dados
-CMD ["/app/wait-for-it.sh", "localhost", "5432", "--", "/app/jdk/bin/java", "-jar", "/app/*.jar", "-Dserver.address=0.0.0.0"]
+COPY --from=apijdk /app/jdk /app/jdk
+RUN chmod +x /app/jdk/bin/*

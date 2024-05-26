@@ -1,19 +1,19 @@
-# fly.toml app configuration file generated for service-system-api on 2024-05-26T13:19:49-03:00
+# fly.toml app configuration file generated for servicesystem on 2024-05-26T13:24:34-03:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'service-system-api'
+app = 'servicesystem'
 primary_region = 'sea'
 kill_signal = 'SIGINT'
 kill_timeout = '5s'
+processes = []
 
 [experimental]
   auto_rollback = true
 
 [build]
   dockerfile = 'Dockerfile'
-  ignorefile = '.dockerignore'
 
 [[services]]
   protocol = 'tcp'
@@ -38,8 +38,3 @@ kill_timeout = '5s'
     interval = '15s'
     timeout = '2s'
     grace_period = '1s'
-
-[[vm]]
-  memory = '512mb'
-  cpu_kind = 'shared'
-  cpus = 1

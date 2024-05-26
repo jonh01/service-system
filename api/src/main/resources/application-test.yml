@@ -19,6 +19,3 @@ spring:
   sql:
     init:
       mode: always
-
-
-    
