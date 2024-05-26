@@ -20,7 +20,6 @@ public class UpdateReviewsAfterInsert implements Trigger {
     @Override
     public void fire(Connection conn, Object[] oldRow, Object[] newRow) throws SQLException {
         // Extract values from the new row
-        System.out.println("object" + newRow);
         int newNote = (int) newRow[1]; // Assuming note is the second column in the row
         String serviceProvidedId = (String) newRow[2]; // Assuming fk_service_provided_id is the third column in the
                                                        // row
