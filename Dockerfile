@@ -36,7 +36,7 @@ ENV POSTGRES_PASSWORD postgres123
 # Criar diretório e copiar scripts de inicialização do banco de dados
 RUN mkdir -p /docker-entrypoint-initdb.d
 WORKDIR /docker-entrypoint-initdb.d
-COPY scripts .
+COPY scripts/scripts-prod.sql .
 
 # Criar diretório para a aplicação e copiar script de espera
 RUN mkdir -p /app/jdk /app/api
