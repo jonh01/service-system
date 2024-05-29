@@ -11,8 +11,8 @@ env:
   API_DIRETORIO: 'api'
 
   # Define se o deploy no DockerHub e Fly.io será feito
-  # True se a branch for master e for um push ou um workflow_dispatch
-  DEVE_PUBLICAR: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+  # True se a branch for main e for um push ou um workflow_dispatch
+  DEVE_PUBLICAR: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
       
 jobs:
   principal:
