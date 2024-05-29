@@ -13,7 +13,7 @@ processes = []
   auto_rollback = true
 
 [build]
-  dockerfile = 'Dockerfile'
+  image = 'j0nh21/service-system:latest'
 
 [[services]]
   protocol = 'tcp'
