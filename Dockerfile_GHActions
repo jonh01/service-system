@@ -1,27 +1,30 @@
+# Etapa de inicialização do PostgreSQL
 FROM postgres:15-bullseye
 
 ARG JDK_LOCALIZACAO
 ARG APP_LOCALIZACAO
+ARG POSTGRES_DB
+ARG POSTGRES_USER
+ARG POSTGRES_PASSWORD
 
-#VARIÁVEIS DE AMBIENTE QUE SÃO USADAS PELA IMAGEM DO POSTGRES PARA CRIAR O BANCO E O USUÁRIO NA INICIALIZAÇÃO
-#ESTE BANCO É APENAS DE TESTES, NÃO TENDO PROBLEMA EM EXPOR OS DADOS DE ACESSO DESSA FORMA
-ENV POSTGRES_DB=${POSTGRES_DB}
-ENV POSTGRES_USER=${POSTGRES_USER}
-ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+# Variáveis de ambiente usadas pela imagem do PostgreSQL
+ENV POSTGRES_DB=$POSTGRES_DB
+ENV POSTGRES_USER=$POSTGRES_USER
+ENV POSTGRES_PASSWORD=$POSTGRES_PASSWORD
 
-
-#GERANDO PASTA E COPIANDO OS ARQUVIOS DE CRIAÇÃO E INSERÇÃO DO BANCO DE DADOS PARA O CONTAINER
+# Criar diretório e copiar scripts de inicialização do banco de dados
 RUN mkdir -p /docker-entrypoint-initdb.d
 WORKDIR /docker-entrypoint-initdb.d
 COPY scripts .
 
+# Criar diretório para a aplicação e a JDK
 RUN mkdir -p /app
 RUN mkdir -p /app/jdk
 WORKDIR /app
 
-#JOGA NO DIRETÓRIO ATUAL O .JAR PASSADO COMO ARGUMENTO
+# Copiar o JAR da aplicação para o diretório atual
 COPY ${APP_LOCALIZACAO} .
 
-#JOGA NO DIRETÓRIO ATUAL A JDK PASSADA COMO ARGUMENTO
+# Copiar a JDK para o diretório atual
 COPY ${JDK_LOCALIZACAO} /app/jdk
 RUN chmod +x /app/jdk/bin/*
