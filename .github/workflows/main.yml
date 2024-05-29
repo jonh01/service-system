@@ -69,6 +69,9 @@ jobs:
           build-args: |
             JDK_LOCALIZACAO=${{ env.JDK_LOCALIZACAO }}
             APP_LOCALIZACAO=${{ env.APP_LOCALIZACAO }}
+            POSTGRES_DB=${{ vars.POSTGRES_DB }}
+            POSTGRES_USER=${{ vars.POSTGRES_USER }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           push: true
           tags: ${{ vars.DOCKERHUB_USER }}/service-system:latest
         
