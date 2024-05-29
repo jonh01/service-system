@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS tb_service_provided_local_action CASCADE;
 DROP TABLE IF EXISTS tb_user CASCADE;
 DROP TABLE IF EXISTS tb_category CASCADE;
 
+
 DROP TYPE IF EXISTS registeredUserType;
 DROP TYPE IF EXISTS statusService;
 
