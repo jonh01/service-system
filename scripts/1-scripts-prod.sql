@@ -313,6 +313,7 @@ VALUES
 ('1f1f79a2-b0cc-4798-9482-56be14051038', 'https://lh3.googleusercontent.com/EDnobTG2hce6p03gozFnrB9JkQy8eEjxHcXyCXAvrdoNK29n2E1baGT5taUBBdfYvXXzfkKIGmti0fGP7oJ8FgiMIwjGZO43CfGEehK21lq7yqZkLBg'),
 ('ff754c40-f90c-444d-b00c-7cee28971573', 'https://lh3.googleusercontent.com/EDnobTG2hce6p03gozFnrB9JkQy8eEjxHcXyCXAvrdoNK29n2E1baGT5taUBBdfYvXXzfkKIGmti0fGP7oJ8FgiMIwjGZO43CfGEehK21lq7yqZkLBg');
 
+
 CREATE TRIGGER update_reviews_after_insert
 AFTER INSERT ON tb_rating
 FOR EACH ROW
