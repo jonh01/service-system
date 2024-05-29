@@ -1,0 +1,83 @@
+name: Build & Test & Deploy
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+  
+env:
+  JAVA_VERSAO: '17'
+  JAVA_DISTRIBUICAO: 'temurin'
+  API_DIRETORIO: 'api'
+
+  # Define se o deploy no DockerHub e Fly.io será feito
+  # True se a branch for master e for um push ou um workflow_dispatch
+  DEVE_PUBLICAR: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/master' }}
+      
+jobs:
+  principal:
+    name: Teste e Build. Deploy no DockerHub e Fly.io 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Prepara o JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUICAO }}
+          java-version: ${{ env.JAVA_VERSAO }}
+          cache: 'maven'
+        
+      - name: Maven (Criação do .jar da aplicação)
+        run: mvn package -f ${{ env.API_DIRETORIO }}/pom.xml &&
+             echo "APP_LOCALIZACAO=$(ls ${{ env.API_DIRETORIO }}/target/*.jar)" >> $GITHUB_ENV
+
+      #Verifica se a JDK que estamos usando tem $JAVA_HOME/lib/security/cacerts sendo um
+      #link simbólico apontando para um outro diretório do sistema.
+      #Se tiver, substitui esse link simbólico pelo arquivo original.   
+      - name: Cópia da JDK e de seus certificados digitais
+        run: |
+             mkdir jdk && cp -r $JAVA_HOME/* jdk &&
+             echo "JDK_LOCALIZACAO=jdk" >> $GITHUB_ENV &&
+             if test -L jdk/lib/security/cacerts ; then
+              caminho_original=$(realpath $JAVA_HOME/lib/security/cacerts) &&
+              rm jdk/lib/security/cacerts &&
+              cp $caminho_original jdk/lib/security &&   
+              ls -l jdk/lib/security/cacerts
+             fi
+      
+      - name: Docker Buildx (Configuração - Se for pra branch principal)
+        if: env.DEVE_PUBLICAR == 'true'
+        uses: docker/setup-buildx-action@v2.5.0
+      
+      - name: Docker Hub (Login - Se for pra branch principal)
+        if: env.DEVE_PUBLICAR == 'true'
+        uses: docker/login-action@v2.1.0
+        with:
+          username: ${{ vars.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Docker (Build e deploy da imagem - Se for pra branch principal)
+        if: env.DEVE_PUBLICAR == 'true'
+        uses: docker/build-push-action@v4.0.0
+        with:
+          context: .
+          file: Dockerfile_GHActions
+
+          #O Dockerfile_GHActions espera receber um caminho para uma JDK e para o APP, pois ele passará ambos para a imagem
+          build-args: |
+            JDK_LOCALIZACAO=${{ env.JDK_LOCALIZACAO }}
+            APP_LOCALIZACAO=${{ env.APP_LOCALIZACAO }}
+          push: true
+          tags: ${{ vars.DOCKERHUB_USER }}/service-system:latest
+        
+      - name: Fly.io (Setup - Se for pra branch principal)
+        if: env.DEVE_PUBLICAR == 'true'
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      
+      - name: Fly.io (Deploy - Se for pra branch principal)
+        if: env.DEVE_PUBLICAR == 'true'
+        run: flyctl deploy
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
