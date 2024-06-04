@@ -26,9 +26,22 @@ public class OrderInsert {
     @NotNull
     private Double price;
 
-    @NotNull
-    private UUID userId;
+    private User user;
+    private ServiceProvided serviceProvided;
 
-    @NotNull
-    private UUID serviceProvidedId;
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    public static class User{
+        @NotNull
+        private UUID id;
+    }
+
+    @Data
+	@NoArgsConstructor
+	@AllArgsConstructor
+    public static class ServiceProvided{
+        @NotNull
+        private UUID id;
+    }
 }

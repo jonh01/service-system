@@ -77,7 +77,7 @@ public class ServiceProvidedService {
 
             if(imageService.isBase64(serviceProvidedInsert.getImage())){
                 String image64 = serviceProvidedInsert.getImage();
-                serviceProvidedInsert.setImage(imageService.saveNuvem(image64));
+                service.setImage(imageService.saveNuvem(image64));
             }
                 else
                     throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
