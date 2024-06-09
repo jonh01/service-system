@@ -1,5 +1,22 @@
-{"properties": [{
-  "name": "freeimage-upload-key",
-  "type": "java.lang.String",
-  "description": "A description for 'freeimage-upload-key'"
-}]}
+{"properties": [
+  {
+    "name": "freeimage-upload-key",
+    "type": "java.lang.String",
+    "description": "A description for 'freeimage-upload-key'"
+  },
+  {
+    "name": "security.token.secret",
+    "type": "java.lang.String",
+    "description": "A description for 'security.token.secret'"
+  },
+  {
+    "name": "security.token.time",
+    "type": "java.lang.String",
+    "description": "A description for 'security.token.time'"
+  },
+  {
+    "name": "security.refreshToken.time",
+    "type": "java.lang.String",
+    "description": "A description for 'security.refreshToken.time'"
+  }
+]}

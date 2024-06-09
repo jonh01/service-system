@@ -13,6 +13,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
@@ -39,7 +40,7 @@ public class User {
     private String phone;
     private String image;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tb_type_user")
     @Enumerated(EnumType.STRING)
     private Set<RegisteredUserType> type = new HashSet<>(); 
@@ -50,5 +51,4 @@ public class User {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
     }
-
 }

@@ -36,6 +36,15 @@ public class UserService {
 		return modelMapper.map(user, UserResponse.class);
 	}
 
+	public UserResponse findByEmail (String email){
+		
+		User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ObjectNotFoundException(
+            "Usuário não encontrado! Email: "+ email ));
+
+		return modelMapper.map(user, UserResponse.class);
+	}
+
 	@Transactional
 	public UserResponse create (UserInsert userInsert){
 
@@ -46,6 +55,8 @@ public class UserService {
 			throw new BusinessException("O CPF fornecido é inválido ou já está em uso.");
 
 		if(userInsert.getImage() != null){
+
+			// userInsert.setImage("https:\\\\/\\\\/iili.io\\\\/Jpi4LwF.jpg"); // utilizar para testes de autenticação
 
             if(imageService.isBase64(userInsert.getImage())){
                 String image64 = userInsert.getImage();
