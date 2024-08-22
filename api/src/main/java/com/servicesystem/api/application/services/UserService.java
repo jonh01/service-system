@@ -56,14 +56,14 @@ public class UserService {
 
 		if(userInsert.getImage() != null){
 
-			// userInsert.setImage("https:\\\\/\\\\/iili.io\\\\/Jpi4LwF.jpg"); // utilizar para testes de autenticação
+			 userInsert.setImage("https:\\\\/\\\\/iili.io\\\\/Jpi4LwF.jpg"); // utilizar para testes de autenticação
 
-            if(imageService.isBase64(userInsert.getImage())){
+            /*if(imageService.isBase64(userInsert.getImage())){
                 String image64 = userInsert.getImage();
                 userInsert.setImage(imageService.saveNuvem(image64));
             }
             else
-                throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
+                throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); */
 
 		}
 

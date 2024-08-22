@@ -18,7 +18,7 @@ public class ServiceProvidedUpdate {
     @Schema(description = "Descrição do serviço", example = "Conserto e limpeza de Notebooks")
     private String description;
 
-    @Schema(description = "Locais para a prestação de serviços", example = "Campo grande")
+    @Schema(description = "Locais para a prestação de serviços", example = "[\"Campo grande\"]")
     private Set<String> localAction = new HashSet<>();
     
 }
