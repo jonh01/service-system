@@ -1,11 +1,8 @@
 package com.servicesystem.api.domain.utils;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -16,7 +13,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.MissingClaimException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import com.servicesystem.api.domain.exceptions.BusinessException;
 import com.servicesystem.api.domain.exceptions.JWTCreationException;
 import com.servicesystem.api.domain.models.enums.TokenType;
 import com.servicesystem.api.domain.models.users.UserDetailsImpl;
@@ -31,18 +27,21 @@ public class JwtUtils {
     private String secret;
 
     @Value("${security.token.time}")
-    private Long tokenTime;
+    private int tokenTime;
 
     @Value("${security.refreshToken.time}")
-    private Long refreshTime;
+    private int refreshTime;
 
     public String generateToken(UserDetailsImpl userDetailsImpl, TokenType tokenType) {
+
+        var expiration = genExpirationDate(tokenType);
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer(applicationName)
                     .withSubject(userDetailsImpl.getUsername())
-                    .withExpiresAt(genExpirationDate(tokenType))
+                    .withIssuedAt(new Date())
+                    .withExpiresAt(expiration)
                     .sign(algorithm);
 
         } catch (Exception exception) {
@@ -60,12 +59,12 @@ public class JwtUtils {
     }
     
 
-    private Instant genExpirationDate(TokenType tokenType) {
+    private Date genExpirationDate(TokenType tokenType) {
 
         return tokenType.equals(TokenType.Token) ? 
-            LocalDateTime.now().plusMinutes(tokenTime).toInstant(ZoneOffset.of("-03:00"))
+            new Date((new Date()).getTime() + (tokenTime*60000) )
         : 
-            LocalDateTime.now().plusMinutes(refreshTime).toInstant(ZoneOffset.of("-03:00"));
+            new Date((new Date()).getTime() + (refreshTime*60000) );
     }
 
     public String getUserNameFromJwtToken(String token) {

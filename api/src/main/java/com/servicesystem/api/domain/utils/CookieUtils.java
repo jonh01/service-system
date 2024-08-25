@@ -31,7 +31,7 @@ public class CookieUtils {
     }
 
     public ResponseCookie addRefreshTokenCookie(String email) {
-        var refreshToken = refreshTokenService.createRefreshToken(email);
+        var refreshToken = refreshTokenService.createRefreshToken(email); // cria o token no banco de dados
         return generateCookie(refreshTokenCookieName, refreshToken.getToken(), "/api/authenticate/refreshtoken");
     }
 
@@ -45,12 +45,12 @@ public class CookieUtils {
 
     public ResponseCookie getCleanJwtCookie() {
 
-        return ResponseCookie.from(jwtCookieName).path("/api").build();
+        return ResponseCookie.from(jwtCookieName).path("/api").maxAge(0).build();
     }
 
     public ResponseCookie getCleanJwtRefreshCookie() {
 
-        return ResponseCookie.from(refreshTokenCookieName).path("/api/authenticate/refreshtoken")
+        return ResponseCookie.from(refreshTokenCookieName).path("/api/authenticate/refreshtoken").maxAge(0)
         .build();
     }
 

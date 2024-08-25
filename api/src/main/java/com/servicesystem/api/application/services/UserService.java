@@ -1,5 +1,8 @@
 package com.servicesystem.api.application.services;
 
+import java.util.Set;
+import java.util.HashSet;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,7 @@ import com.servicesystem.api.application.payload.response.UserResponse;
 import com.servicesystem.api.application.payload.update.UserUpdate;
 import com.servicesystem.api.domain.exceptions.BusinessException;
 import com.servicesystem.api.domain.exceptions.ObjectNotFoundException;
+import com.servicesystem.api.domain.models.enums.RegisteredUserType;
 import com.servicesystem.api.domain.models.users.User;
 import com.servicesystem.api.domain.repositories.UserRepository;
 import com.servicesystem.api.domain.utils.ConverterUtil;
@@ -54,6 +58,10 @@ public class UserService {
 		if(!userInsert.getCpf().isBlank() && existsByCpf(userInsert.getCpf()))
 			throw new BusinessException("O CPF fornecido é inválido ou já está em uso.");
 
+		Set<RegisteredUserType> type = new HashSet<>(); 
+		type.add(RegisteredUserType.Client);
+		userInsert.setType(type);
+
 		if(userInsert.getImage() != null){
 
 			 userInsert.setImage("https:\\\\/\\\\/iili.io\\\\/Jpi4LwF.jpg"); // utilizar para testes de autenticação
@@ -76,7 +84,7 @@ public class UserService {
     @Transactional
 	public UserResponse update (String id, UserUpdate userUpdate) {
 
-		if(!userUpdate.getEmail().isBlank() && existsByEmail(userUpdate.getEmail()))
+		if(userUpdate.getEmail() != null && existsByEmail(userUpdate.getEmail()))
 			throw new BusinessException("O email fornecido é inválido ou já está em uso.");
 
 		User searchedUser = userRepository.findById(ConverterUtil.convertStringForUUID(id))

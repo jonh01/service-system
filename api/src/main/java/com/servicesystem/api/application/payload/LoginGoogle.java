@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginGoogle {
 
-    @Schema(description = "Usuário", example = "{\"name\":\"João\", \"email\":\"joao@email.com\", \"cpf\":\"418.717.690-00\", \"phone\": \"(21)91234-5678, \"image\": \"Imagem em base 64\", \"type\": [\"Client\"]} ")
+    @Schema(description = "Usuário", example = "{\"name\":\"João\", \"email\":\"joao@email.com\", \"cpf\":\"418.717.690-00\", \"phone\": \"(21)91234-5678, \"image\": \"Imagem em base 64\"} ")
     @Valid
     private UserInsert user;
 

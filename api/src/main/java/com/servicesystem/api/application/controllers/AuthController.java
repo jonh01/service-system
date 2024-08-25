@@ -4,9 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +17,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.servicesystem.api.application.payload.LoginGoogle;
 import com.servicesystem.api.application.payload.response.GoogleTokenErrorResponse;
 import com.servicesystem.api.application.payload.response.GoogleTokenResponse;
+import com.servicesystem.api.application.services.AuthService;
 import com.servicesystem.api.application.services.RefreshTokenService;
 import com.servicesystem.api.application.services.UserDetailsServiceImpl;
 import com.servicesystem.api.application.services.UserService;
@@ -37,6 +35,9 @@ import jakarta.validation.constraints.NotBlank;
 public class AuthController {
 
     @Autowired
+    AuthService authService;
+
+    @Autowired
     private RestTemplate restTemplate;
 
     @Autowired
@@ -44,9 +45,6 @@ public class AuthController {
 
     @Autowired
     private UserDetailsServiceImpl uServiceImpl;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Autowired
     private RefreshTokenService refreshTokenService;
@@ -74,27 +72,16 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("token do google incorreto!");
             }
 
-            tokenResponse.setEmail("joao@email.com"); // apagar linha quando utilizar a função do google
+            tokenResponse.setEmail("user1@example.com"); // apagar linha quando utilizar a função do google
 
             if (!userService.existsByEmail(tokenResponse.getEmail())) {
                 return ResponseEntity.badRequest().body("E-mail não cadastrado! Por favor, crie uma conta");
             }
 
-            var authentication = this.authenticationManager
-                    .authenticate(new PreAuthenticatedAuthenticationToken(tokenResponse.getEmail(), google_token));
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-            ResponseCookie jwtCookie = cookieUtils.addJwtCookie(userDetails);
-            refreshTokenService.createRefreshToken(userDetails.getEmail()); // cria o token no banco de dados
-            ResponseCookie jwtRefreshCookie = cookieUtils.addRefreshTokenCookie(userDetails.getEmail());
+            UserDetailsImpl userDetails = authService.authentication(tokenResponse.getEmail(), google_token);
 
             // Criar cabeçalhos e adicionar cookies
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-            headers.add(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString());
+            HttpHeaders headers = authService.addHeaders(userDetails);
 
             return ResponseEntity.ok()
                     .headers(headers)
@@ -126,26 +113,16 @@ public class AuthController {
 
             tokenResponse.setEmail(loginGoogle.getUser().getEmail()); // apagar linha quando utilizar a função do google
 
-            if (!userService.existsByEmail(tokenResponse.getEmail())) {
-                userService.create(loginGoogle.getUser());
+            if (userService.existsByEmail(tokenResponse.getEmail())) {
+                return ResponseEntity.badRequest().body("E-mail já cadastrado! Por favor, faça login na sua conta");
             }
 
-            var authentication = this.authenticationManager
-                    .authenticate(new PreAuthenticatedAuthenticationToken(tokenResponse.getEmail(),
-                            loginGoogle.getGoogleToken()));
+            userService.create(loginGoogle.getUser()); // criar usuário
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-            ResponseCookie jwtCookie = cookieUtils.addJwtCookie(userDetails);
-            refreshTokenService.createRefreshToken(userDetails.getEmail()); // cria o token no banco de dados
-            ResponseCookie jwtRefreshCookie = cookieUtils.addRefreshTokenCookie(userDetails.getEmail());
+            UserDetailsImpl userDetails = authService.authentication(tokenResponse.getEmail(), loginGoogle.getGoogleToken());
 
             // Criar cabeçalhos e adicionar cookies
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-            headers.add(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString());
+            HttpHeaders headers = authService.addHeaders(userDetails);
 
             return ResponseEntity.ok()
                     .headers(headers)
@@ -159,23 +136,9 @@ public class AuthController {
 
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {
-        Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!"anonymousUser".equals(principle.toString())) {
-            String email = ((UserDetailsImpl) principle).getEmail();
-            refreshTokenService.deleteByEmail(email);
-        }
-
-        ResponseCookie jwtCookie = cookieUtils.getCleanJwtCookie();
-        ResponseCookie jwtRefreshCookie = cookieUtils.getCleanJwtRefreshCookie();
-
-        // Criar cabeçalhos e adicionar cookies
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
-        headers.add(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString());
 
         return ResponseEntity.ok()
-                .headers(headers)
+                .headers(authService.clearToken())
                 .body("Você foi deslogado!");
     }
 
@@ -214,11 +177,11 @@ public class AuthController {
 
                 return ResponseEntity.badRequest()
                         .headers(headers)
-                        .body("Token inválido: " + ex + "\n Faça login novamente!");
+                        .body("Refresh Token inválido: " + ex + "\n Faça login novamente!");
 
             }
         }
-        return ResponseEntity.badRequest().body("Refresh Token inválido!");
+        return ResponseEntity.badRequest().body("Refresh Token inválido! Faça login novamente!");
     }
 
 }

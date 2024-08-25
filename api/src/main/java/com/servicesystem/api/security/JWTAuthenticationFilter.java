@@ -2,6 +2,8 @@ package com.servicesystem.api.security;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +33,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
             @NonNull FilterChain chain)
@@ -49,11 +53,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException ex) {
-                response.setStatus(403);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"error\": \"" + ex.getMessage() + "\"}");
-                return;
+                logger.error("Cannot set user authentication: {}", ex);
             }
         }
         chain.doFilter(request, response);
