@@ -42,7 +42,7 @@ ENV POSTGRES_PASSWORD postgres123
 # Criar diretório e copiar scripts de inicialização do banco de dados
 RUN mkdir -p /docker-entrypoint-initdb.d
 WORKDIR /docker-entrypoint-initdb.d
-COPY scripts .
+COPY scripts/1-scripts-prod.sql .
 
 # Criar diretório para a aplicação e copiar script de espera
 RUN mkdir -p /app/jdk
@@ -55,3 +55,10 @@ COPY --from=apijdk /app/api/target/*.jar /app/
 
 COPY --from=apijdk /app/jdk /app/jdk
 RUN chmod +x /app/jdk/bin/*
+
+# Copiar e definir script de inicialização
+COPY wait-for-postgres.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/wait-for-postgres.sh
+
+# Executar o script de espera seguido pelo script de inicialização do Java
+CMD ["wait-for-postgres.sh", "/app/jdk/bin/java -jar *.jar -Dserver.address=0.0.0.0 &"]
