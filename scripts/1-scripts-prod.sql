@@ -82,7 +82,7 @@ CREATE TABLE tb_user
 CREATE TABLE tb_refresh_token
 (
     
-    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    id SERIAL PRIMARY KEY,
     fk_user_email character varying(255),
     token character varying(255),
     CONSTRAINT tb_refresh_token_unique_token UNIQUE (token),
