@@ -55,7 +55,7 @@ public class CategoryService {
     @Transactional
 	public CategoryResponse update (String id, CategoryUpdate categoryUpdate) {
 
-		if(!categoryUpdate.getName().isBlank() && existsByName(categoryUpdate.getName()))
+		if(categoryUpdate.getName() != null && existsByName(categoryUpdate.getName()))
 			throw new BusinessException("O nome fornecido para a categoria já está em uso.");
 
 		Category searchedCategory = categoryRepository.findById(ConverterUtil.convertStringForUUID(id))

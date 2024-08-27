@@ -79,6 +79,19 @@ CREATE TABLE tb_user
 	CONSTRAINT tb_user_email_key UNIQUE (email)
 );
 
+CREATE TABLE tb_refresh_token
+(
+    
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    fk_user_email character varying(255),
+    token character varying(255),
+    CONSTRAINT tb_refresh_token_unique_token UNIQUE (token),
+    CONSTRAINT tb_refresh_token_unique_email UNIQUE (fk_user_email),
+	CONSTRAINT fk_user_service FOREIGN KEY (fk_user_email) REFERENCES tb_user (email) 
+		ON DELETE CASCADE
+        ON UPDATE NO ACTION
+);
+
 CREATE TABLE tb_service_provided
 (
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),

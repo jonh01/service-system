@@ -22,6 +22,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.servicesystem.api.application.payload.insert.CategoryInsert;
 import com.servicesystem.api.application.payload.response.CategoryResponse;
 import com.servicesystem.api.application.payload.update.CategoryUpdate;
+import com.servicesystem.api.application.services.AuthService;
 import com.servicesystem.api.application.services.CategoryService;
 
 import jakarta.validation.Valid;
@@ -33,10 +34,15 @@ public class CategoryController {
 
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    AuthService authService;
     
     @GetMapping
-    ResponseEntity<Page<CategoryResponse>> findAllByName(
+    ResponseEntity<Page<CategoryResponse>> findAll(
             @ParameterObject @PageableDefault(size = 5, sort = "id") Pageable pageable ) {
+
+        authService.userPermission();
         
         return ResponseEntity.ok(categoryService.findAll(pageable));
     }
