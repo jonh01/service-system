@@ -18,7 +18,7 @@ COPY api .
 
 # Construir o JAR da aplicação
 RUN chmod +x mvnw 
-RUN mvnw package
+RUN ./mvnw package
 
 # Copiar JDK para dentro do container
 RUN mkdir -p /app/jdk && cp -r $JAVA_HOME/* /app/jdk
