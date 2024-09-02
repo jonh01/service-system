@@ -12,8 +12,6 @@ processes = []
 [build]
   image = "j0nh21/service-system:latest"
 
-[env]
-
 [experimental]
   auto_rollback = true
 
