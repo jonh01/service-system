@@ -28,6 +28,13 @@ DROP TYPE IF EXISTS statusService;
 CREATE TYPE registeredUserType AS ENUM  ('Client','Provider','Admin');
 CREATE TYPE statusService AS ENUM  ('Active','Pending','Disabled');
 
+CREATE EXTENSION unaccent;
+
+CREATE OR REPLACE FUNCTION remove_accents(input TEXT) RETURNS TEXT AS $$
+BEGIN
+    RETURN unaccent(input);
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION update_reviews_after_insert() RETURNS TRIGGER 
 	LANGUAGE plpgsql

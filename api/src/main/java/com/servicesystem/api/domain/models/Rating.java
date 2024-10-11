@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.servicesystem.api.domain.models.users.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -42,8 +44,10 @@ public class Rating {
 	@JoinColumn(name="fk_user_id")
     private User user;
 
-    @Column(name = "fk_service_provided_id")
-    private UUID serviceProvidedId;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="fk_service_provided_id")
+    private ServiceProvided serviceProvided;
 
     private LocalDateTime createdAt;
 

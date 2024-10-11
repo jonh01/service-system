@@ -14,6 +14,7 @@ import com.servicesystem.api.application.payload.update.ServiceProvidedUpdate;
 import com.servicesystem.api.domain.exceptions.BusinessException;
 import com.servicesystem.api.domain.exceptions.ObjectNotFoundException;
 import com.servicesystem.api.domain.models.ServiceProvided;
+import com.servicesystem.api.domain.models.enums.RegisteredUserType;
 import com.servicesystem.api.domain.models.enums.StatusService;
 import com.servicesystem.api.domain.repositories.ServiceProvidedRepository;
 import com.servicesystem.api.domain.utils.ConverterUtil;
@@ -32,6 +33,9 @@ public class ServiceProvidedService {
     @Autowired
 	private ImageService imageService;
 
+    @Autowired
+    private UserService userService;
+
     public Page<ServiceProvidedUserResponse> findAllByUserId (String userId, Pageable pageable){
 
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByUserId(ConverterUtil.convertStringForUUID(userId), pageable);
@@ -40,19 +44,45 @@ public class ServiceProvidedService {
 
     public Page<ServiceProvidedSummaryResponse> findAllByName (String name, StatusService status, Pageable pageable){
 
-        Page<ServiceProvided> page = serviceProvidedRepository.findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(status, name, name, pageable);
+        String formatedName = ConverterUtil.removeAccents(name);
+        System.out.println(formatedName);
+        Page<ServiceProvided> page = serviceProvidedRepository.findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(status, formatedName, formatedName, pageable);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
     }
 
-    public Page<ServiceProvidedSummaryResponse> findAllByCategoryIdAndStatus (String categoryId, StatusService status, Pageable pageable){
+    /*public Page<ServiceProvidedSummaryResponse> findAllByCategoryIdAndStatus (String categoryId, StatusService status, Pageable pageable){
 
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatus(ConverterUtil.convertStringForUUID(categoryId), status, pageable);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
-    }
+    }*/
 
     public Page<ServiceProvidedSummaryResponse> findAllByNameAndCategoryIdAndStatus (String name, String categoryId, StatusService status, Pageable pageable){
 
-        Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatusAndNameOrDescription(ConverterUtil.convertStringForUUID(categoryId), status, name, name, pageable);
+        String formatedName = ConverterUtil.removeAccents(name);
+        
+        Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatusAndNameOrDescription(ConverterUtil.convertStringForUUID(categoryId), status, formatedName, formatedName, pageable);
+        return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
+    }
+
+    public Page<ServiceProvidedSummaryResponse> findAllByStatusAndNameOrDescriptionAndLocalAction (String name, StatusService status, String local, Pageable pageable){
+
+        String formatedName = ConverterUtil.removeAccents(name);
+
+        Page<ServiceProvided> page = serviceProvidedRepository.findAllByStatusAndNameOrDescriptionAndLocalAction(status, formatedName, formatedName, local, pageable);
+        return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
+    }
+
+    /*public Page<ServiceProvidedSummaryResponse> findAllByCategoryIdAndStatusAndLocalAction (String categoryId, StatusService status, String local, Pageable pageable){
+
+        Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatusAndLocalAction(ConverterUtil.convertStringForUUID(categoryId), status, local, pageable);
+        return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
+    }*/
+
+    public Page<ServiceProvidedSummaryResponse> findAllByNameAndCategoryIdAndStatusAndLocalAction (String name, String categoryId, StatusService status, String local, Pageable pageable){
+
+        String formatedName = ConverterUtil.removeAccents(name);
+
+        Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatusAndNameOrDescriptionAndLocalAction(ConverterUtil.convertStringForUUID(categoryId), status, formatedName, formatedName, local, pageable);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
     }
 
@@ -67,6 +97,12 @@ public class ServiceProvidedService {
 
 	@Transactional
 	public ServiceProvidedResponse create (ServiceProvidedInsert serviceProvidedInsert){
+
+        String email = AuthService.userLogged();
+
+        if(!userService.existsByEmailAndType(email, RegisteredUserType.Provider)){
+            userService.updateType(email, RegisteredUserType.Provider);
+        }
 
         var service = modelMapper.map(serviceProvidedInsert, ServiceProvided.class);
         service.setStatus(StatusService.Pending);

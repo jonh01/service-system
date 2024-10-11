@@ -40,7 +40,7 @@ public class UserInsert {
     @Phone
     private String phone;
 
-    @Schema(description = "Imagem do usuário", example = "Imagem em base 64")
+    @Schema(description = "Imagem do usuário", example = "URL da imagem ou Imagem Base 64")
     private String image;
     
     private Set<RegisteredUserType> type = new HashSet<>(); 

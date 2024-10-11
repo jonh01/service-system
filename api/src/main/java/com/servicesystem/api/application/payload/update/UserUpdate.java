@@ -28,7 +28,9 @@ public class UserUpdate {
     @Phone
     private String phone;
     
+    @Schema(description = "Imagem do usuário", example = "Imagem em base 64")
     private String image;
+    
     private Set<RegisteredUserType> type = new HashSet<>();
 
 }

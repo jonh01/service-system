@@ -3,7 +3,6 @@ package com.servicesystem.api.domain.models;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -47,7 +46,6 @@ public class ServiceProvided {
     @Column(columnDefinition="TEXT")
     private String description;
 
-    
     @ElementCollection
 	@CollectionTable(name="tb_service_provided_localAction")
     private Set<String> localAction = new HashSet<>();
@@ -59,11 +57,6 @@ public class ServiceProvided {
     @ManyToOne
 	@JoinColumn(name="fk_category_id")
     private Category category;
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_service_provided_id")
-    private List<Rating> ratings;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Integer numReviews;

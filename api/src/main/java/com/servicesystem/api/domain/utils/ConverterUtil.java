@@ -1,6 +1,7 @@
 package com.servicesystem.api.domain.utils;
 
 import java.util.UUID;
+import java.text.Normalizer;
 
 import com.servicesystem.api.domain.exceptions.BusinessException;
 
@@ -21,5 +22,12 @@ public class ConverterUtil {
         }
         return uuid;
     }
-    
+
+    public static String removeAccents(String input) {
+        if (input == null) {
+            return null;
+        }
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+                         .replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    }
 }

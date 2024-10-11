@@ -13,20 +13,75 @@ import com.servicesystem.api.domain.models.enums.StatusService;
 
 public interface ServiceProvidedRepository extends JpaRepository<ServiceProvided, UUID> {
 
-    Page<ServiceProvided> findAllByUserId(UUID id, Pageable pageable);
+       Page<ServiceProvided> findAllByUserId(UUID id, Pageable pageable);
 
-    Page<ServiceProvided> findAllByCategoryIdAndStatus(UUID categoryId, StatusService status, Pageable pageable);
+       // Page<ServiceProvided> findAllByCategoryIdAndStatus(UUID categoryId,
+       // StatusService status, Pageable pageable);
 
-    Page<ServiceProvided> findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(StatusService status, String name, String description, Pageable pageable);
-    @Query("SELECT s FROM tb_service_provided s " +
-           "WHERE (s.category.id = :categoryId AND s.status = :status AND " +
-           "(LOWER(s.name) LIKE LOWER(CONCAT('%', :name, '%')) OR LOWER(s.description) LIKE LOWER(CONCAT('%', :description, '%'))))")
-    Page<ServiceProvided> findAllByCategoryIdAndStatusAndNameOrDescription(
-            @Param("categoryId") UUID categoryId, 
-            @Param("status") StatusService status, 
-            @Param("name") String name, 
-            @Param("description") String description, 
-            Pageable pageable);
+       // Page<ServiceProvided> findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+       //               StatusService status, String name, String description, Pageable pageable);
 
-    
+                     @Query("SELECT s FROM tb_service_provided s " +
+                     "WHERE (s.status = :status AND " +
+                     "(LOWER(CAST(remove_accents(s.name) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :name, '%')) AS string)) " +
+       "OR LOWER(CAST(remove_accents(s.description) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :description, '%')) AS string))))")
+       Page<ServiceProvided> findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
+                     @Param("status") StatusService status,
+                     @Param("name") String name,
+                     @Param("description") String description,
+                     Pageable pageable);
+
+       @Query("SELECT s FROM tb_service_provided s " +
+                     "WHERE (s.category.id = :categoryId AND s.status = :status AND " +
+                     "(LOWER(CAST(remove_accents(s.name) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :name, '%')) AS string)) " +
+                     "OR LOWER(CAST(remove_accents(s.description) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :description, '%')) AS string))))")
+       Page<ServiceProvided> findAllByCategoryIdAndStatusAndNameOrDescription(
+                     @Param("categoryId") UUID categoryId,
+                     @Param("status") StatusService status,
+                     @Param("name") String name,
+                     @Param("description") String description,
+                     Pageable pageable);
+
+       @Query("SELECT s FROM tb_service_provided s " +
+                     "LEFT JOIN s.localAction la " +
+                     "WHERE (s.status = :status AND " +
+                     "(LOWER(CAST(remove_accents(s.name) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :name, '%')) AS string)) " +
+                     "OR LOWER(CAST(remove_accents(s.description) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :description, '%')) AS string))) AND "+
+                     "(LOWER(CAST(remove_accents(la) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :localAction, '%')) AS string))))")
+       Page<ServiceProvided> findAllByStatusAndNameOrDescriptionAndLocalAction(
+                     @Param("status") StatusService status,
+                     @Param("name") String name,
+                     @Param("description") String description,
+                     @Param("localAction") String localAction,
+                     Pageable pageable);
+
+       /*
+        * @Query("SELECT s FROM tb_service_provided s " +
+        * "LEFT JOIN s.localAction la " +
+        * "WHERE (s.category.id = :categoryId AND s.status = :status AND " +
+        * "(LOwer(la) LIKE LOWER(CONCAT('%', :localAction, '%'))))")
+        * Page<ServiceProvided> findAllByCategoryIdAndStatusAndLocalAction(
+        * 
+        * @Param("categoryId") UUID categoryId,
+        * 
+        * @Param("status") StatusService status,
+        * 
+        * @Param("localAction") String localAction,
+        * Pageable pageable);
+        */
+
+       @Query("SELECT s FROM tb_service_provided s " +
+                     "LEFT JOIN s.localAction la " +
+                     "WHERE (s.category.id = :categoryId AND s.status = :status AND " +
+                     "(LOWER(CAST(remove_accents(s.name) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :name, '%')) AS string)) " +
+                     "OR LOWER(CAST(remove_accents(s.description) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :description, '%')) AS string))) AND "+
+                     "(LOWER(CAST(remove_accents(la) AS string)) ILIKE LOWER(CAST(remove_accents(CONCAT('%', :localAction, '%')) AS string))))")
+       Page<ServiceProvided> findAllByCategoryIdAndStatusAndNameOrDescriptionAndLocalAction(
+                     @Param("categoryId") UUID categoryId,
+                     @Param("status") StatusService status,
+                     @Param("name") String name,
+                     @Param("description") String description,
+                     @Param("localAction") String localAction,
+                     Pageable pageable);
+
 }

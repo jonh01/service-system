@@ -23,8 +23,7 @@ public class ServiceProvidedUserResponse {
 	@NoArgsConstructor
 	@AllArgsConstructor
     private static class User{
-	private String name;
-    private String image;
+    private UUID id;
     }
 
 }

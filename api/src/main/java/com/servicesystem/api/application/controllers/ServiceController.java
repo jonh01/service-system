@@ -38,9 +38,9 @@ public class ServiceController {
     @Autowired
     ServiceProvidedService serviceProvidedService;
     
-    @GetMapping("/users/services")
+    @GetMapping("/users/{userId}/services")
     ResponseEntity<Page<ServiceProvidedUserResponse>> findAllByUser( 
-            @RequestParam String userId, 
+            @PathVariable String userId,
             @ParameterObject @PageableDefault(size = 5, sort = "id") Pageable pageable ) {
 
         return ResponseEntity.ok(serviceProvidedService.findAllByUserId(userId, pageable));
@@ -48,17 +48,21 @@ public class ServiceController {
 
     @GetMapping("/services")
     ResponseEntity<Page<ServiceProvidedSummaryResponse>> findAllByStatus( 
-            @RequestParam(required = false) String name,
             @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) String local,
+            @RequestParam String name,
             @RequestParam StatusService status,
             @ParameterObject @PageableDefault(size = 5, sort = "id") Pageable pageable ) {
 
-        if(name != null && categoryId != null)
+        if(name != null && categoryId != null && local != null)
+            return ResponseEntity.ok(serviceProvidedService.findAllByNameAndCategoryIdAndStatusAndLocalAction(name, categoryId, status, local, pageable));
+        else if(name != null && categoryId != null)
             return ResponseEntity.ok(serviceProvidedService.findAllByNameAndCategoryIdAndStatus(name, categoryId, status, pageable));
-        else if(categoryId == null)
-            return ResponseEntity.ok(serviceProvidedService.findAllByName(name, status, pageable));
+
+        if(categoryId == null && name != null && local != null)
+            return ResponseEntity.ok(serviceProvidedService.findAllByStatusAndNameOrDescriptionAndLocalAction(name, status, local, pageable));
         else
-            return ResponseEntity.ok(serviceProvidedService.findAllByCategoryIdAndStatus(categoryId, status, pageable));
+            return ResponseEntity.ok(serviceProvidedService.findAllByName(name, status, pageable));
     }
 
     @GetMapping("/services/{id}")

@@ -32,11 +32,12 @@ public class AuthService {
         return (UserDetailsImpl) authentication.getPrincipal();
     }
 
-    public void userPermission() {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getDetails());
+    public static String userLogged() {
+        UserDetailsImpl usu = (UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return usu.getEmail();
     }
 
-    public void userPermission(String id) {
+    public void userPermission() {
         System.out.println(SecurityContextHolder.getContext().getAuthentication().getDetails());
     }
     

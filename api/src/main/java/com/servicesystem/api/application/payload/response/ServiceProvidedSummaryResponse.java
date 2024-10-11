@@ -1,5 +1,7 @@
 package com.servicesystem.api.application.payload.response;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import com.servicesystem.api.domain.models.enums.StatusService;
@@ -18,6 +20,7 @@ public class ServiceProvidedSummaryResponse {
     private String image;
     private String description;
     private StatusService status;
+    private Set<String> localAction = new HashSet<>();
     private User user;
     private Category category;
     private Integer numReviews;

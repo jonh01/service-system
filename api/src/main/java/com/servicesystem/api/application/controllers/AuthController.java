@@ -60,23 +60,8 @@ public class AuthController {
         String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + google_token;
 
         try {
-            // GoogleTokenResponse tokenInfo = restTemplate.getForObject(url,
-            // GoogleTokenResponse.class); // descomentar função do google
-
-            GoogleTokenResponse tokenResponse = new GoogleTokenResponse(); // setando um email só para usar a função do
-                                                                           // google (apagar linha quando utilizar a
-                                                                           // função do google)
-
-            if (!google_token.equals("123456")) { // função temporária para verificar o erro (apagar
-                                                  // futuramente)
-                return ResponseEntity.badRequest().body("token do google incorreto!");
-            }
-
-            tokenResponse.setEmail("user1@example.com"); // apagar linha quando utilizar a função do google
-
-            if (!userService.existsByEmail(tokenResponse.getEmail())) {
-                return ResponseEntity.badRequest().body("E-mail não cadastrado! Por favor, crie uma conta");
-            }
+            GoogleTokenResponse tokenResponse = restTemplate.getForObject(url,
+            GoogleTokenResponse.class); // Função que consulta a api do Google para validar o token
 
             UserDetailsImpl userDetails = authService.authentication(tokenResponse.getEmail(), google_token);
 
@@ -99,23 +84,8 @@ public class AuthController {
         String url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + loginGoogle.getGoogleToken();
 
         try {
-            // GoogleTokenResponse tokenInfo = restTemplate.getForObject(url,
-            // GoogleTokenResponse.class); // descomentar função do google
-
-            GoogleTokenResponse tokenResponse = new GoogleTokenResponse(); // setando um email só para usar a função do
-                                                                           // google (apagar linha quando utilizar a
-                                                                           // função do google)
-
-            if (!loginGoogle.getGoogleToken().equals("123456")) { // função temporária para verificar o erro (apagar
-                                                                  // futuramente)
-                return ResponseEntity.badRequest().body("token do google incorreto!");
-            }
-
-            tokenResponse.setEmail(loginGoogle.getUser().getEmail()); // apagar linha quando utilizar a função do google
-
-            if (userService.existsByEmail(tokenResponse.getEmail())) {
-                return ResponseEntity.badRequest().body("E-mail já cadastrado! Por favor, faça login na sua conta");
-            }
+             GoogleTokenResponse tokenResponse = restTemplate.getForObject(url,
+             GoogleTokenResponse.class); // Função que consulta a api do Google para validar o token
 
             userService.create(loginGoogle.getUser()); // criar usuário
 
@@ -175,13 +145,23 @@ public class AuthController {
                 headers.add(HttpHeaders.SET_COOKIE, jwtCookie.toString());
                 headers.add(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString());
 
-                return ResponseEntity.badRequest()
+                return ResponseEntity.status(401)
                         .headers(headers)
                         .body("Refresh Token inválido: " + ex + "\n Faça login novamente!");
 
             }
         }
-        return ResponseEntity.badRequest().body("Refresh Token inválido! Faça login novamente!");
+        return ResponseEntity.status(401).body("Refresh Token inválido! Faça login novamente!");
+    }
+
+    @PostMapping("/logged")
+    public ResponseEntity<String> userLogged() {
+
+        String email = AuthService.userLogged();
+
+        return email != null && email.length()>0 ? ResponseEntity.ok()
+                .body("Você está logado! Login: " + email): ResponseEntity.badRequest()
+                .body("Você foi deslogado!");
     }
 
 }

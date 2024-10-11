@@ -2,7 +2,11 @@ package com.servicesystem.api.application.controllers;
 
 import java.net.URI;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,19 +27,27 @@ import com.servicesystem.api.application.services.RatingService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/ratings")
+@RequestMapping
 @CrossOrigin(origins = "*")
 public class RatingController {
 
     @Autowired
     RatingService ratingService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/services/{serviceId}/ratings")
+    ResponseEntity<Page<RatingResponse>> findAllByService( 
+            @PathVariable String serviceId,
+            @ParameterObject @PageableDefault(size = 5, sort = "id") Pageable pageable ) {
+
+        return ResponseEntity.ok(ratingService.finAllByService(serviceId, pageable));
+    }
+
+    @GetMapping("/ratings/{id}")
     ResponseEntity<RatingResponse> findById (@PathVariable String id) {
         return ResponseEntity.ok(ratingService.findById(id));
     }
 
-    @PostMapping
+    @PostMapping("/ratings")
     public ResponseEntity<RatingResponse> create(@Valid  @RequestBody RatingInsert ratingInsert) {
 
         var newRating = ratingService.create(ratingInsert);
@@ -47,14 +59,14 @@ public class RatingController {
         return ResponseEntity.created(location).body(newRating);
 	}
 
-    @PutMapping("/{id}")
+    @PutMapping("/ratings/{id}")
 	public ResponseEntity<Void> update(@PathVariable String id, @Valid @RequestBody RatingUpdate ratingUpdate) {
 
         ratingService.update(id, ratingUpdate);
         return ResponseEntity.noContent().build();
 	}
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/ratings/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
 	
         ratingService.delete(id);

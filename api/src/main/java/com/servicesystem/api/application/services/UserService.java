@@ -1,6 +1,8 @@
 package com.servicesystem.api.application.services;
 
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.HashSet;
 
 import org.modelmapper.ModelMapper;
@@ -64,14 +66,12 @@ public class UserService {
 
 		if(userInsert.getImage() != null){
 
-			 userInsert.setImage("https:\\\\/\\\\/iili.io\\\\/Jpi4LwF.jpg"); // utilizar para testes de autenticação
-
-            /*if(imageService.isBase64(userInsert.getImage())){
+            if(imageService.isBase64(userInsert.getImage())){
                 String image64 = userInsert.getImage();
                 userInsert.setImage(imageService.saveNuvem(image64));
             }
-            else
-                throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); */
+            else if(!containsPattern(userInsert.getImage()))
+                throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64 ou é uma imagem de perfil do Google!"); 
 
 		}
 
@@ -96,6 +96,21 @@ public class UserService {
 		return modelMapper.map(userRepository.save(searchedUser), UserResponse.class);
 	}
 
+	@Transactional
+	public UserResponse updateType (String email, RegisteredUserType type) {
+
+		if(email != null && existsByEmail(email))
+			throw new BusinessException("O email fornecido é inválido ou já está em uso.");
+
+		User searchedUser = userRepository.findByEmail(email)
+        .orElseThrow(() -> new ObjectNotFoundException(
+            "Usuário não encontrado! Email "+ email ));
+
+		searchedUser.getType().add(type);
+		
+		return modelMapper.map(userRepository.save(searchedUser), UserResponse.class);
+	}
+
     public void delete (String id) {
 		UserResponse searchedUser = findById(id);
 		userRepository.deleteById(searchedUser.getId());
@@ -108,6 +123,10 @@ public class UserService {
 	public boolean existsByCpf(String email) {
         return userRepository.existsByCpf(email);
     }
+
+	public boolean existsByEmailAndType(String email, RegisteredUserType type){
+		return userRepository.existsByEmailAndType(email, type);
+	}
 
 	private void updateUser(UserUpdate usuUp, User user){
 
@@ -131,5 +150,18 @@ public class UserService {
 			user.setType(usuUp.getType());
 
 	}
+
+	public static boolean containsPattern(String text) {
+
+        // Define a regex para corresponder ao padrão: https<qualquer coisa>google<qualquer coisa>
+        String regex = "https.*google.*";
+        
+        // Cria o padrão e o matcher
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        
+        // Retorna se a string contém o padrão
+        return matcher.find();
+    }
     
 }

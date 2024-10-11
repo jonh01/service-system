@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.servicesystem.api.application.payload.insert.RatingInsert;
@@ -30,6 +32,12 @@ public class RatingService {
 
     @Autowired
 	private ImageService imageService;
+
+    public Page<RatingResponse> finAllByService (String seviceId, Pageable pageable ) {
+        
+      Page<Rating> page = ratingRepository.findAllByServiceProvidedId(ConverterUtil.convertStringForUUID(seviceId), pageable);
+        return page.map(rating -> modelMapper.map(rating, RatingResponse.class));
+    }
 
     public RatingResponse findById (String id){
 		
