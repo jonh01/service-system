@@ -21,7 +21,7 @@ public class RatingInsert {
     @NotNull
     @Min(value = 1, message = "Só são aceitos valores de 1 - 5")
     @Max(value = 5, message = "Só são aceitos valores de 1 - 5")
-    private Integer note;
+    private Double note;
     
     @Schema(description = "Comentário sobre serviço prestado", example = "Ótimo serviço")
     private String comment;

@@ -3,6 +3,8 @@ package com.servicesystem.api.application.payload.response;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.servicesystem.api.domain.models.enums.StatusService;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +21,7 @@ public class ServiceProvidedResponse {
     private String name;
     private String image;
     private String description;
+    private StatusService status;
     private Set<String> localAction = new HashSet<>();
     private User user;
     private Category category;
@@ -34,6 +37,7 @@ public class ServiceProvidedResponse {
         private UUID id;
 	    private String name;
         private String image;
+        private String phone;
     }
 
     @Data

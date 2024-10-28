@@ -36,6 +36,9 @@ public class ServiceProvidedService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private CategoryService categoryService;
+
     public Page<ServiceProvidedUserResponse> findAllByUserId (String userId, Pageable pageable){
 
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByUserId(ConverterUtil.convertStringForUUID(userId), pageable);
@@ -49,12 +52,6 @@ public class ServiceProvidedService {
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(status, formatedName, formatedName, pageable);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
     }
-
-    /*public Page<ServiceProvidedSummaryResponse> findAllByCategoryIdAndStatus (String categoryId, StatusService status, Pageable pageable){
-
-        Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatus(ConverterUtil.convertStringForUUID(categoryId), status, pageable);
-        return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
-    }*/
 
     public Page<ServiceProvidedSummaryResponse> findAllByNameAndCategoryIdAndStatus (String name, String categoryId, StatusService status, Pageable pageable){
 
@@ -71,12 +68,6 @@ public class ServiceProvidedService {
         Page<ServiceProvided> page = serviceProvidedRepository.findAllByStatusAndNameOrDescriptionAndLocalAction(status, formatedName, formatedName, local, pageable);
         return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
     }
-
-    /*public Page<ServiceProvidedSummaryResponse> findAllByCategoryIdAndStatusAndLocalAction (String categoryId, StatusService status, String local, Pageable pageable){
-
-        Page<ServiceProvided> page = serviceProvidedRepository.findAllByCategoryIdAndStatusAndLocalAction(ConverterUtil.convertStringForUUID(categoryId), status, local, pageable);
-        return page.map(serviceProvided -> modelMapper.map(serviceProvided, ServiceProvidedSummaryResponse.class));
-    }*/
 
     public Page<ServiceProvidedSummaryResponse> findAllByNameAndCategoryIdAndStatusAndLocalAction (String name, String categoryId, StatusService status, String local, Pageable pageable){
 
@@ -100,12 +91,20 @@ public class ServiceProvidedService {
 
         String email = AuthService.userLogged();
 
+        if(serviceProvidedInsert.getCategory().getId() != null && !categoryService.existsById(serviceProvidedInsert.getCategory().getId().toString())){
+            throw new BusinessException("Não é possível criar um novo serviço. Esta categoria Não existe.");
+        }
+
+        if(serviceProvidedInsert.getUser().getId() != null && !userService.existsById(serviceProvidedInsert.getUser().getId().toString())){
+            throw new BusinessException("Não é possível criar um novo serviço. Este usuário não existe.");
+        }
+
         if(!userService.existsByEmailAndType(email, RegisteredUserType.Provider)){
             userService.updateType(email, RegisteredUserType.Provider);
         }
 
         var service = modelMapper.map(serviceProvidedInsert, ServiceProvided.class);
-        service.setStatus(StatusService.Pending);
+        service.setStatus(StatusService.Active);
         service.setNumReviews(0);
         service.setSumReviews(0);
 
@@ -155,6 +154,20 @@ public class ServiceProvidedService {
 		);
 	}
 
+    public boolean existsById(String id){
+
+        return serviceProvidedRepository.existsById(ConverterUtil.convertStringForUUID(id));
+    }
+
+    public boolean existsByIdAndStatus(String id, StatusService status){
+
+        return serviceProvidedRepository.existsByIdAndStatus(ConverterUtil.convertStringForUUID(id), status);
+    }
+
+    public boolean existsByIdAndUserId(String id, String userId){
+        return serviceProvidedRepository.existsByIdAndUserId(ConverterUtil.convertStringForUUID(id), ConverterUtil.convertStringForUUID(userId));
+    }
+
     private void updateServiceProvided (ServiceProvidedUpdate serviceProvidedUp, ServiceProvided serviceProvided) {
 
         if (serviceProvidedUp.getImage() != null){
@@ -167,10 +180,8 @@ public class ServiceProvidedService {
         if(serviceProvidedUp.getDescription() != null)
             serviceProvided.setDescription(serviceProvidedUp.getDescription());
 
-        if(serviceProvidedUp.getLocalAction().isEmpty()){
-            for (String local : serviceProvidedUp.getLocalAction()) {
-                serviceProvided.getLocalAction().add(local);
-            }
+        if(serviceProvidedUp.getLocalAction() != null){
+            serviceProvided.setLocalAction(serviceProvidedUp.getLocalAction());
         }
         
     }

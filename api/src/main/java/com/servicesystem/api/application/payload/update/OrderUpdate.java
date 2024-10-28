@@ -15,6 +15,9 @@ public class OrderUpdate {
     @Schema(description = "Data do começo do serviço", example = "2024-05-09T24:00:00")
     private LocalDateTime startAt;
 
+    @Schema(description = "Local da ordem", example = "Rua A 222 Campo Grande RJ")
+    private String local;
+
     @Schema(description = "Data do fim do serviço", example = "2024-05-09T24:00:00")
     private LocalDateTime endAt;
 

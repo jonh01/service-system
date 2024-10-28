@@ -33,6 +33,12 @@ public class RatingService {
     @Autowired
 	private ImageService imageService;
 
+    @Autowired
+    private ServiceProvidedService providedService;
+
+    @Autowired
+    private UserService userService;
+
     public Page<RatingResponse> finAllByService (String seviceId, Pageable pageable ) {
         
       Page<Rating> page = ratingRepository.findAllByServiceProvidedId(ConverterUtil.convertStringForUUID(seviceId), pageable);
@@ -47,9 +53,26 @@ public class RatingService {
 
 		return modelMapper.map(rating, RatingResponse.class);
 	}
+    
+    public RatingResponse findByUserIdAndServiceProvidedId (String userId, String serviceProvidedId) {
+
+        Rating rating = ratingRepository.findByUserIdAndServiceProvidedId(ConverterUtil.convertStringForUUID(userId), ConverterUtil.convertStringForUUID(serviceProvidedId))
+        .orElseThrow(() -> new ObjectNotFoundException(
+            "Avaliação não encontrada!"));
+
+		return modelMapper.map(rating, RatingResponse.class);
+    }
 
 	@Transactional
 	public RatingResponse create (RatingInsert ratingInsert){
+
+        if(ratingInsert.getUser().getId() != null && !userService.existsById(ratingInsert.getUser().getId().toString())){
+            throw new BusinessException("Não é possível criar uma nova avaliação. Este usuário não existe.");
+        }
+
+        if(ratingInsert.getServiceProvided().getId() != null && !providedService.existsById(ratingInsert.getServiceProvided().getId().toString())){
+            throw new BusinessException("Não é possível criar uma nova avaliação pois o serviço não existe.");
+        }
              
         if (existsWithUserAndServiceProvide(ratingInsert.getUser().getId(), ratingInsert.getServiceProvided().getId()))
             throw new BusinessException("Avaliação já cadastrada!"); 
@@ -88,7 +111,7 @@ public class RatingService {
 		ratingRepository.deleteById(searchedRating.getId());
 	}
 
-    private boolean existsWithUserAndServiceProvide (UUID userId, UUID serviceProvidedId) {
+    public boolean existsWithUserAndServiceProvide (UUID userId, UUID serviceProvidedId) {
         return ratingRepository.existsByUserIdAndServiceProvidedId(userId, serviceProvidedId);
     }
 
@@ -101,12 +124,18 @@ public class RatingService {
             rating.setNote(ratingUp.getNote());
 
         if(ratingUp.getImages().isEmpty()){
+            var images = rating.getImages();
+            int error = 0;
             for (String image : ratingUp.getImages()) {
                 if(imageService.isBase64(image))
-                    rating.getImages().add(imageService.saveNuvem(image));
+                    images.add(imageService.saveNuvem(image));
                 else
-                    throw new BusinessException("Está imagem não corresponde ao padrão do sistema Base64!"); 
+                    error++;  
             }
+            rating.setImages(images);
+
+            if(error > 0)
+                throw new BusinessException("Algumas imagens não seguem o padrão correto. Verifique as imagens que foram atualizadas."); 
         }
         
     }

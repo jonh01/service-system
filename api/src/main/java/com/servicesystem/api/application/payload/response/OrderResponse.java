@@ -14,6 +14,7 @@ public class OrderResponse {
 
 	private UUID id;
     private String description;
+    private String local;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private Double price;
@@ -28,6 +29,8 @@ public class OrderResponse {
         private UUID id;
 	    private String name;
         private String image;
+        private String phone;
+        private String email;
     }
 
     @Data
@@ -36,5 +39,6 @@ public class OrderResponse {
     private static class ServiceProvided{
         private UUID id;
 	    private String name;
+        private User user;
     }
 }

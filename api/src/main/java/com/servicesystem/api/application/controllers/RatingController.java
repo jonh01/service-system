@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -23,6 +24,7 @@ import com.servicesystem.api.application.payload.insert.RatingInsert;
 import com.servicesystem.api.application.payload.response.RatingResponse;
 import com.servicesystem.api.application.payload.update.RatingUpdate;
 import com.servicesystem.api.application.services.RatingService;
+import com.servicesystem.api.domain.utils.ConverterUtil;
 
 import jakarta.validation.Valid;
 
@@ -45,6 +47,10 @@ public class RatingController {
     @GetMapping("/ratings/{id}")
     ResponseEntity<RatingResponse> findById (@PathVariable String id) {
         return ResponseEntity.ok(ratingService.findById(id));
+    }
+    @GetMapping("/ratings")
+    ResponseEntity<RatingResponse> findByUserIdAndServiceProvidedId (@RequestParam String userId, @RequestParam String serviceId) {
+        return ResponseEntity.ok(ratingService.findByUserIdAndServiceProvidedId(userId, serviceId));
     }
 
     @PostMapping("/ratings")
@@ -71,6 +77,13 @@ public class RatingController {
 	
         ratingService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/ratings/exists")
+    public ResponseEntity<Boolean> existsWithUserAndServiceProvide(@RequestParam String userId, @RequestParam String serviceId) {
+	
+        var exists = ratingService.existsWithUserAndServiceProvide(ConverterUtil.convertStringForUUID(userId), ConverterUtil.convertStringForUUID(serviceId));
+        return ResponseEntity.ok(exists);
     }
 
 }

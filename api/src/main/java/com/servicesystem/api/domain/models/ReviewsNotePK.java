@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewsNotePK  implements Serializable{
 
-    private Integer note;
+    private Double note;
     private UUID serviceProvidedId;
     
 }

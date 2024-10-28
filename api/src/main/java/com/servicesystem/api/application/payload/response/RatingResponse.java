@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class RatingResponse {
 
     private UUID id;
-    private Integer note;
+    private Double note;
     private String comment;
     private Set<String> images = new HashSet<>();
     private User user;

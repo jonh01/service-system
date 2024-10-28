@@ -18,7 +18,7 @@ public class RatingUpdate {
     @Schema(description = "Nota para o serviço prestado", example = "1", minimum = "1", maximum = "5")
     @Min(value = 1, message = "Só são aceitos valores de 1 - 5")
     @Max(value = 5, message = "Só são aceitos valores de 1 - 5")
-    private Integer note;
+    private Double note;
     
     @Schema(description = "Comentário sobre serviço prestado", example = "Ótimo serviço")
     private String comment;

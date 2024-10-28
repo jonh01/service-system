@@ -15,11 +15,9 @@ public interface ServiceProvidedRepository extends JpaRepository<ServiceProvided
 
        Page<ServiceProvided> findAllByUserId(UUID id, Pageable pageable);
 
-       // Page<ServiceProvided> findAllByCategoryIdAndStatus(UUID categoryId,
-       // StatusService status, Pageable pageable);
+       boolean existsByIdAndStatus(UUID id, StatusService status);
 
-       // Page<ServiceProvided> findAllByStatusAndNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
-       //               StatusService status, String name, String description, Pageable pageable);
+       boolean existsByIdAndUserId(UUID id, UUID userId);
 
                      @Query("SELECT s FROM tb_service_provided s " +
                      "WHERE (s.status = :status AND " +
@@ -54,21 +52,6 @@ public interface ServiceProvidedRepository extends JpaRepository<ServiceProvided
                      @Param("description") String description,
                      @Param("localAction") String localAction,
                      Pageable pageable);
-
-       /*
-        * @Query("SELECT s FROM tb_service_provided s " +
-        * "LEFT JOIN s.localAction la " +
-        * "WHERE (s.category.id = :categoryId AND s.status = :status AND " +
-        * "(LOwer(la) LIKE LOWER(CONCAT('%', :localAction, '%'))))")
-        * Page<ServiceProvided> findAllByCategoryIdAndStatusAndLocalAction(
-        * 
-        * @Param("categoryId") UUID categoryId,
-        * 
-        * @Param("status") StatusService status,
-        * 
-        * @Param("localAction") String localAction,
-        * Pageable pageable);
-        */
 
        @Query("SELECT s FROM tb_service_provided s " +
                      "LEFT JOIN s.localAction la " +

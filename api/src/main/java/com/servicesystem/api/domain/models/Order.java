@@ -26,6 +26,7 @@ public class Order {
 	private UUID id;
 
     private String description;
+    private String local;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private Double price;

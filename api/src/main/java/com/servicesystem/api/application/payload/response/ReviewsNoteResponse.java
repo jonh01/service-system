@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewsNoteResponse {
     
-    private Integer note;
+    private Double note;
     private UUID serviceProvidedId;
     private Integer numReviews;
 }

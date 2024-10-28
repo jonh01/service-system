@@ -15,7 +15,4 @@ public class CategoryUpdate {
 
 	@Schema(description = "Descrição da categoria", example = "Conserto e limpeza de notebooks")
 	private String description;
-
-	@Schema(description = "Preço base da categoria", example = "29.99")
-	private Double price;
 }

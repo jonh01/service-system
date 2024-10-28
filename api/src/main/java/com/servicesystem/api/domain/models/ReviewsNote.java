@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class ReviewsNote {
 
     @Id
-    private Integer note;
+    private Double note;
 
     @Id
     @Column(name = "fk_service_provided_id")

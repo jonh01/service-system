@@ -12,7 +12,11 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
     Page<Order> findAllByUserIdAndEndAtIsNull(UUID id, Pageable pageable);
     Page<Order> findAllByUserIdAndEndAtIsNotNull(UUID id, Pageable pageable);
 
-    Page<Order> findAllByServiceProvidedUser_Id(UUID userId, Pageable pageable);
+    Page<Order> findAllByUserId(UUID id, Pageable pageable);
+
+    Page<Order> findAllByServiceProvidedUserId(UUID userId, Pageable pageable);
 
     boolean existsByIdAndEndAtIsNull(UUID id);
+
+    boolean existsByUserIdAndServiceProvidedIdAndEndAtIsNull(UUID userId, UUID serviceProvidedId);
 }

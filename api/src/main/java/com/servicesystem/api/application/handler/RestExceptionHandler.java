@@ -9,6 +9,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -159,5 +160,27 @@ public class RestExceptionHandler {
                 fields);
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
+    }
+
+    // erro UUID
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e,
+            HttpServletRequest request) {
+        // Verifica se a causa é um erro específico de UUID
+        if (e.getMessage().contains("Cannot deserialize value of type `java.util.UUID`")) {
+
+            StandardError err = new StandardError();
+            err.setTimestamp(LocalDateTime.now());
+            err.setStatus(HttpStatus.BAD_REQUEST.value());
+            err.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
+            err.setMessage("Formato inválido para o UUID. Por favor, use um UUID de 36 caracteres.");
+            err.setPath(request.getRequestURI());
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+        }
+
+        // Retorna a mensagem padrão para outros erros de parsing
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Erro ao ler a mensagem JSON: " + e.getMessage());
     }
 }

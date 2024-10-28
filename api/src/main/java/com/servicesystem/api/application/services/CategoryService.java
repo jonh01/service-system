@@ -72,6 +72,11 @@ public class CategoryService {
 		categoryRepository.deleteById(searchedCategory.getId());
 	}
 
+    public boolean existsById(String id){
+
+        return categoryRepository.existsById(ConverterUtil.convertStringForUUID(id));
+    }
+
     public boolean existsByName(String name){
         return categoryRepository.existsByName(name);
     }
@@ -83,9 +88,6 @@ public class CategoryService {
 
         if(categoryUp.getDescription() != null)
             category.setDescription(categoryUp.getDescription());
-
-        if(categoryUp.getPrice() != null)
-            category.setPrice(categoryUp.getPrice());
         
     }
 }

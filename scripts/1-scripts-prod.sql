@@ -68,7 +68,6 @@ CREATE TABLE tb_category
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     description text,
     name character varying(255),
-    price double precision
 );
 
 
@@ -141,7 +140,7 @@ CREATE TABLE tb_type_user
 
 CREATE TABLE tb_reviews_note
 (
-    note INTEGER NOT NULL,
+    note numeric NOT NULL,
     num_reviews INTEGER NOT NULL,
     fk_service_provided_id uuid NOT NULL,
     CONSTRAINT tb_reviews_note_pkey PRIMARY KEY (note, fk_service_provided_id),
@@ -158,6 +157,7 @@ CREATE TABLE tb_order
     end_at timestamp(6) without time zone,
     start_at timestamp(6) without time zone,    
 	description character varying(255),
+    local character varying(255),
     fk_service_provided_id uuid,
     fk_user_id uuid,
     CONSTRAINT fk_user_order FOREIGN KEY (fk_user_id) REFERENCES tb_user (id)
@@ -172,7 +172,7 @@ CREATE TABLE tb_rating
 (
 
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-    note integer,
+    note numeric,
     created_at timestamp(6) without time zone,
 	comment text,
     fk_service_provided_id uuid,
@@ -196,13 +196,13 @@ CREATE TABLE tb_rating_image
 
 
 
-INSERT INTO tb_category (price, id, description, name) 
+INSERT INTO tb_category (id, description, name) 
 VALUES 
-(10.99, '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 'Categoria de desenvolvimento de software', 'Desenvolvimento de Software'),
-(15.50, '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', 'Categoria de redes de computadores', 'Rede de Computadores'),
-(20.75, '3d7e1f12-9206-4814-b29a-4a9cfc3f199b', 'Categoria de montagem e manutenção de notebooks e computadores', 'Montagem e Manutenção de Notebooks e Computadores'),
-(12.25, '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', 'Categoria de UX designer', 'UX Designer'),
-(18.00, '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 'Categoria de DevOps', 'DevOps');
+('1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 'Categoria de desenvolvimento de software', 'Desenvolvimento de Software'),
+('2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', 'Categoria de redes de computadores', 'Rede de Computadores'),
+('3d7e1f12-9206-4814-b29a-4a9cfc3f199b', 'Categoria de montagem e manutenção de notebooks e computadores', 'Montagem e Manutenção de Notebooks e Computadores'),
+('4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', 'Categoria de UX designer', 'UX Designer'),
+('5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 'Categoria de DevOps', 'DevOps');
 
 
 INSERT INTO tb_user (created_at, id, cpf, email, image, name, phone) 
@@ -219,18 +219,18 @@ VALUES
 ('2024-01-10 19:00:00', 'ff754c40-f90c-444d-b00c-7cee28971573', '012.345.678-90', 'user0@example.com', 'https://cdn-icons-png.flaticon.com/512/17/17004.png', 'User Ten', '000-000-0000');
 
 
-INSERT INTO tb_service_provided (id, num_reviews, sum_reviews, status, created_at, description, image, name, fk_category_id, fk_user_id) 
+INSERT INTO tb_service_provided (id, num_reviews, sum_reviews, status, created_at, description, name, fk_category_id, fk_user_id) 
 VALUES 
-('1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 1, 5, 'Active', '2024-01-01 10:00:00', 'Desenvolvimento de aplicativos', 'https://example.com/service1.jpg', 'App Development', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25'),
-('2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', 1, 4, 'Pending', '2024-01-02 11:00:00', 'Configuração de rede', 'https://example.com/service2.jpg', 'Network Configuration', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623'),
-('3d7e1f12-9206-4814-b29a-4a9cfc3f199b', 1, 5, 'Disabled', '2024-01-03 12:00:00', 'Manutenção de computadores', 'https://example.com/service3.jpg', 'Computer Maintenance', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b'),
-('4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', 1, 3, 'Active', '2024-01-04 13:00:00', 'Design de interfaces', 'https://example.com/service4.jpg', 'Interface Design', '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20'),
-('5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 1, 2, 'Pending', '2024-01-05 14:00:00', 'Automação de DevOps', 'https://example.com/service5.jpg', 'DevOps Automation', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e'),
-('902f5e7c-1045-4522-924d-4eb2c20b3105', 1, 5, 'Active', '2024-01-06 15:00:00', 'Consultoria em TI', 'https://example.com/service6.jpg', 'IT Consulting', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', '902f5e7c-1045-4522-924d-4eb2c20b3105'),
-('c238de93-05e0-4e06-8347-3048c9692a23', 1, 1, 'Disabled', '2024-01-07 16:00:00', 'Desenvolvimento Web', 'https://example.com/service7.jpg', 'Web Development', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 'c238de93-05e0-4e06-8347-3048c9692a23'),
-('f1199e50-f0fd-4cf9-9da7-dba71e164aed', 1, 1, 'Active', '2024-01-08 17:00:00', 'Análise de dados', 'https://example.com/service8.jpg', 'Data Analysis', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 'f1199e50-f0fd-4cf9-9da7-dba71e164aed'),
-('1f1f79a2-b0cc-4798-9482-56be14051038', 1, 5, 'Pending', '2024-01-09 18:00:00', 'Suporte técnico', 'https://example.com/service9.jpg', 'Technical Support', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b', '1f1f79a2-b0cc-4798-9482-56be14051038'),
-('ff754c40-f90c-444d-b00c-7cee28971573', 1, 3, 'Active', '2024-01-10 19:00:00', 'Gestão de projetos', 'https://example.com/service10.jpg', 'Project Management', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 'ff754c40-f90c-444d-b00c-7cee28971573');
+('1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 1, 5, 'Active', '2024-01-01 10:00:00', 'Desenvolvimento de aplicativos', 'App Development', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25'),
+('2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', 1, 4, 'Pending', '2024-01-02 11:00:00', 'Configuração de rede', 'Network Configuration', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623'),
+('3d7e1f12-9206-4814-b29a-4a9cfc3f199b', 1, 5, 'Disabled', '2024-01-03 12:00:00', 'Manutenção de computadores', 'Computer Maintenance', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b'),
+('4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', 1, 3, 'Active', '2024-01-04 13:00:00', 'Design de interfaces', 'Interface Design', '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20'),
+('5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 1, 2, 'Pending', '2024-01-05 14:00:00', 'Automação de DevOps', 'DevOps Automation', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e'),
+('902f5e7c-1045-4522-924d-4eb2c20b3105', 1, 5, 'Active', '2024-01-06 15:00:00', 'Consultoria em TI', 'IT Consulting', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', '902f5e7c-1045-4522-924d-4eb2c20b3105'),
+('c238de93-05e0-4e06-8347-3048c9692a23', 1, 1, 'Disabled', '2024-01-07 16:00:00', 'Desenvolvimento Web', 'Web Development', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 'c238de93-05e0-4e06-8347-3048c9692a23'),
+('f1199e50-f0fd-4cf9-9da7-dba71e164aed', 1, 1, 'Active', '2024-01-08 17:00:00', 'Análise de dados', 'Data Analysis', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 'f1199e50-f0fd-4cf9-9da7-dba71e164aed'),
+('1f1f79a2-b0cc-4798-9482-56be14051038', 1, 5, 'Pending', '2024-01-09 18:00:00', 'Suporte técnico', 'Technical Support', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b', '1f1f79a2-b0cc-4798-9482-56be14051038'),
+('ff754c40-f90c-444d-b00c-7cee28971573', 1, 3, 'Active', '2024-01-10 19:00:00', 'Gestão de projetos', 'Project Management', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 'ff754c40-f90c-444d-b00c-7cee28971573');
 
 
 INSERT INTO tb_service_provided_local_action (tb_service_provided_id, local_action) 
@@ -295,16 +295,16 @@ VALUES
 
 INSERT INTO tb_order (id, price, created_at, end_at, start_at, description, fk_service_provided_id, fk_user_id) 
 VALUES 
-('1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 50.00, '2024-01-01 10:00:00', '2024-01-05 10:00:00', '2024-01-01 12:00:00', 'Ordem de serviço 1', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25'),
-('2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', 75.00, '2024-01-02 11:00:00', '2024-01-06 11:00:00', '2024-01-02 13:00:00', 'Ordem de serviço 2', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623'),
-('3d7e1f12-9206-4814-b29a-4a9cfc3f199b', 100.00, '2024-01-03 12:00:00', '2024-01-07 12:00:00', '2024-01-03 14:00:00', 'Ordem de serviço 3', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b'),
-('4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', 60.00, '2024-01-04 13:00:00', '2024-01-08 13:00:00', '2024-01-04 15:00:00', 'Ordem de serviço 4', '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20'),
-('5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 80.00, '2024-01-05 14:00:00', '2024-01-09 14:00:00', '2024-01-05 16:00:00', 'Ordem de serviço 5', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e'),
-('902f5e7c-1045-4522-924d-4eb2c20b3105', 70.00, '2024-01-06 15:00:00', '2024-01-10 15:00:00', '2024-01-06 17:00:00', 'Ordem de serviço 6', '902f5e7c-1045-4522-924d-4eb2c20b3105', '902f5e7c-1045-4522-924d-4eb2c20b3105'),
-('c238de93-05e0-4e06-8347-3048c9692a23', 85.00, '2024-01-07 16:00:00', '2024-01-11 16:00:00', '2024-01-07 18:00:00', 'Ordem de serviço 7', 'c238de93-05e0-4e06-8347-3048c9692a23', 'c238de93-05e0-4e06-8347-3048c9692a23'),
-('f1199e50-f0fd-4cf9-9da7-dba71e164aed', 90.00, '2024-01-08 17:00:00', '2024-01-12 17:00:00', '2024-01-08 19:00:00', 'Ordem de serviço 8', 'f1199e50-f0fd-4cf9-9da7-dba71e164aed', 'f1199e50-f0fd-4cf9-9da7-dba71e164aed'),
-('1f1f79a2-b0cc-4798-9482-56be14051038', 95.00, '2024-01-09 18:00:00', '2024-01-13 18:00:00', '2024-01-09 20:00:00', 'Ordem de serviço 9', '1f1f79a2-b0cc-4798-9482-56be14051038', '1f1f79a2-b0cc-4798-9482-56be14051038'),
-('ff754c40-f90c-444d-b00c-7cee28971573', 55.00, '2024-01-10 19:00:00', '2024-01-14 19:00:00', '2024-01-10 21:00:00', 'Ordem de serviço 10', 'ff754c40-f90c-444d-b00c-7cee28971573', 'ff754c40-f90c-444d-b00c-7cee28971573');
+('1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 50.00, '2024-01-01 10:00:00', '2024-01-05 10:00:00', '2024-01-01 12:00:00', 'Ordem de serviço 1', 'Rua Juciara 1 Campos RJ','1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25'),
+('2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', 75.00, '2024-01-02 11:00:00', '2024-01-06 11:00:00', '2024-01-02 13:00:00', 'Ordem de serviço 2', 'Rua da Mali 458 Minas MG','2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623'),
+('3d7e1f12-9206-4814-b29a-4a9cfc3f199b', 100.00, '2024-01-03 12:00:00', '2024-01-07 12:00:00', '2024-01-03 14:00:00', 'Ordem de serviço 3', 'Rua da Mali 42 Minas MG','3d7e1f12-9206-4814-b29a-4a9cfc3f199b', '3d7e1f12-9206-4814-b29a-4a9cfc3f199b'),
+('4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', 60.00, '2024-01-04 13:00:00', '2024-01-08 13:00:00', '2024-01-04 15:00:00', 'Ordem de serviço 4', 'Rua Juciara 343 Campos RJ','4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20', '4e6b3a79-f9e1-4c8d-8f0a-89ef42653b20'),
+('5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', 80.00, '2024-01-05 14:00:00', '2024-01-09 14:00:00', '2024-01-05 16:00:00', 'Ordem de serviço 5', 'Rua da Mali 4583 Minas MG','5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e', '5f5d4b30-c8e5-4e7a-b646-ff2b2de8ef2e'),
+('902f5e7c-1045-4522-924d-4eb2c20b3105', 70.00, '2024-01-06 15:00:00', '2024-01-10 15:00:00', '2024-01-06 17:00:00', 'Ordem de serviço 6', 'Rua Juciara d12 Campos RJ','902f5e7c-1045-4522-924d-4eb2c20b3105', '902f5e7c-1045-4522-924d-4eb2c20b3105'),
+('c238de93-05e0-4e06-8347-3048c9692a23', 85.00, '2024-01-07 16:00:00', '2024-01-11 16:00:00', '2024-01-07 18:00:00', 'Ordem de serviço 7', 'Rua da Mali e2 Minas MG','c238de93-05e0-4e06-8347-3048c9692a23', 'c238de93-05e0-4e06-8347-3048c9692a23'),
+('f1199e50-f0fd-4cf9-9da7-dba71e164aed', 90.00, '2024-01-08 17:00:00', '2024-01-12 17:00:00', '2024-01-08 19:00:00', 'Ordem de serviço 8', 'Rua Pirambuci 341 Campos RJ','f1199e50-f0fd-4cf9-9da7-dba71e164aed', 'f1199e50-f0fd-4cf9-9da7-dba71e164aed'),
+('1f1f79a2-b0cc-4798-9482-56be14051038', 95.00, '2024-01-09 18:00:00', '2024-01-13 18:00:00', '2024-01-09 20:00:00', 'Ordem de serviço 9', 'Rua 23B a1 Campos RJ','1f1f79a2-b0cc-4798-9482-56be14051038', '1f1f79a2-b0cc-4798-9482-56be14051038'),
+('ff754c40-f90c-444d-b00c-7cee28971573', 55.00, '2024-01-10 19:00:00', '2024-01-14 19:00:00', '2024-01-10 21:00:00', 'Ordem de serviço 10', 'Rua Juciara 45455 Campos RJ','ff754c40-f90c-444d-b00c-7cee28971573', 'ff754c40-f90c-444d-b00c-7cee28971573');
 
 
 INSERT INTO tb_rating (id, note, created_at, comment, fk_service_provided_id, fk_user_id) 

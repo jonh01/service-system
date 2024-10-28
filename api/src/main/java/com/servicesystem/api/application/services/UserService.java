@@ -99,8 +99,8 @@ public class UserService {
 	@Transactional
 	public UserResponse updateType (String email, RegisteredUserType type) {
 
-		if(email != null && existsByEmail(email))
-			throw new BusinessException("O email fornecido é inválido ou já está em uso.");
+		if(email != null && !existsByEmail(email))
+			throw new BusinessException("O email fornecido é inválido.");
 
 		User searchedUser = userRepository.findByEmail(email)
         .orElseThrow(() -> new ObjectNotFoundException(
@@ -115,6 +115,10 @@ public class UserService {
 		UserResponse searchedUser = findById(id);
 		userRepository.deleteById(searchedUser.getId());
 	}
+
+	public boolean existsById(String id) {
+        return userRepository.existsById(ConverterUtil.convertStringForUUID(id));
+    }
 
 	public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);

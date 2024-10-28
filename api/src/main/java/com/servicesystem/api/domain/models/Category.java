@@ -24,7 +24,5 @@ public class Category {
 
 	@Column(columnDefinition="TEXT")
 	private String description;
-	
-	private Double price;
 
 }

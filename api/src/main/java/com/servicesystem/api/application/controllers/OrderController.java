@@ -46,10 +46,13 @@ public class OrderController {
     @GetMapping
     ResponseEntity<Page<OrderResponse>> findAllByUser( 
             @RequestParam String userId, 
-            @RequestParam boolean finished,
+            @RequestParam(required = false) Boolean finished,
             @ParameterObject @PageableDefault(size = 5, sort = "id") Pageable pageable ) {
 
-        return ResponseEntity.ok(orderService.findAllByUserIdAndEndAt(userId, finished, pageable));
+        if(finished != null)
+            return ResponseEntity.ok(orderService.findAllByUserIdAndEndAt(userId, finished, pageable));
+        else    
+            return ResponseEntity.ok(orderService.findAllByUserId(userId,pageable));
     }
 
     @GetMapping("/{id}")
@@ -81,6 +84,12 @@ public class OrderController {
 	
         orderService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/exists")
+    public ResponseEntity<Boolean> existsByUserIdAndServiceProvidedIdAndEndAtIsNull(@RequestParam String userId, @RequestParam String serviceId) {
+	
+        var exists = orderService.existsByUserIdAndServiceProvidedIdAndEndAtIsNull(userId, serviceId);
+        return ResponseEntity.ok(exists);
     }
 
 }
