@@ -1,11 +1,11 @@
 # Etapa de construção da api
 FROM openjdk:17-alpine AS apijdk
 
-# Porta padrão do Tomcat
-EXPOSE 8080
-
 #Porta padrão do POSTGRESQL
 EXPOSE 5432
+
+# Porta padrão do Tomcat
+EXPOSE 8080
 
 # Criar diretório de trabalho para o api
 RUN mkdir -p /app/api

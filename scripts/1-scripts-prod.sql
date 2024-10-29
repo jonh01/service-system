@@ -67,7 +67,7 @@ CREATE TABLE tb_category
     
     id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
     description text,
-    name character varying(255),
+    name character varying(255)
 );
 
 
