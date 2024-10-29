@@ -293,7 +293,7 @@ VALUES
 (1, 3, 'ff754c40-f90c-444d-b00c-7cee28971573');
 
 
-INSERT INTO tb_order (id, price, created_at, end_at, start_at, description, fk_service_provided_id, fk_user_id) 
+INSERT INTO tb_order (id, price, created_at, end_at, start_at, description, local, fk_service_provided_id, fk_user_id) 
 VALUES 
 ('1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', 50.00, '2024-01-01 10:00:00', '2024-01-05 10:00:00', '2024-01-01 12:00:00', 'Ordem de serviço 1', 'Rua Juciara 1 Campos RJ','1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25', '1a8b64b7-6e4c-4c62-9b79-5e94ae1b8e25'),
 ('2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', 75.00, '2024-01-02 11:00:00', '2024-01-06 11:00:00', '2024-01-02 13:00:00', 'Ordem de serviço 2', 'Rua da Mali 458 Minas MG','2c9f3e8a-fb9e-4a8e-af77-3d0411b08623', '2c9f3e8a-fb9e-4a8e-af77-3d0411b08623'),
