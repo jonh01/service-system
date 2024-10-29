@@ -40,9 +40,3 @@ kill_timeout = '5s'
     interval = "15s"
     restart_limit = 0
     timeout = "2s"
-
-[[vm]]
-  size = 'shared-cpu-1x'
-  memory = '512mb'
-  cpu_kind = 'shared'
-  cpus = 1
