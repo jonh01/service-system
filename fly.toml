@@ -4,7 +4,7 @@
 #
 
 app = 'service-system'
-primary_region = 'sea'
+primary_region = 'iad'
 kill_signal = 'SIGINT'
 kill_timeout = '5s'
 
@@ -40,3 +40,8 @@ kill_timeout = '5s'
     interval = "15s"
     restart_limit = 0
     timeout = "2s"
+
+[[vm]]
+  size = 'shared-cpu-2x'
+  memory = '512mb'
+  cpu_kind = 'shared'
